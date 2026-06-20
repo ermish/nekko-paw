@@ -56,9 +56,25 @@ Same engine, same UI, multiple runtimes (see the design in the project spec):
 | Edition | How | Status |
 | --- | --- | --- |
 | **Desktop** | Electron app / `npm run dev` | ✅ available |
-| **Self-hosted web** | `npx nekko-paw` or `npm run web` — offline, same UI in your browser | 🔜 planned |
+| **Self-hosted web** | `npm run web` — offline, the same UI in your browser | ✅ available |
 | **Docker** | `docker compose up` — workspaces as volumes, local models via `host.docker.internal` | 🔜 planned |
 | **Nekko Cloud** (paid) | managed hosting: subscriptions, always-available **Zero-Data-Retention** mode, cloud chat-history + file management, and **drive your local model from your phone** via a secure E2E relay | 🔜 planned |
+
+The desktop, web, and (coming) Docker editions all run the **same engine + same React UI** — only the transport differs (Electron IPC vs HTTP/WebSocket), via the shared `@nekko/host`.
+
+### Run the web edition
+
+```bash
+npm install
+npm run web        # builds everything, then serves at http://localhost:4317
+```
+
+Same app, in your browser, fully offline. It binds to `localhost` by default; to
+expose it on your network set `NEKKO_HOST=0.0.0.0` (a one-time access token is
+printed — append `?token=…` to the URL). Data lives in `~/.nekko-paw` (override
+with `NEKKO_DATA_DIR`).
+
+![Nekko Paw web edition](docs/screenshots/web-edition.png)
 
 Cloud keeps inference and tools **on your machine** — the relay is an
 end-to-end-encrypted pipe to a paired local agent, so using your own model stays

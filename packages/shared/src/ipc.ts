@@ -44,6 +44,7 @@ export const IpcChannels = {
 
   workspaceList: 'workspace:list',
   workspaceAdd: 'workspace:add',
+  workspaceAddByPath: 'workspace:addByPath',
   workspaceRemove: 'workspace:remove',
   workspaceIndex: 'workspace:index',
   workspaceIndexStatus: 'workspace:indexStatus',
@@ -103,6 +104,7 @@ export interface NekkoApi {
 
   listWorkspaces(): Promise<WorkspaceFolder[]>;
   addWorkspace(): Promise<WorkspaceFolder[]>;
+  addWorkspaceByPath(path: string): Promise<WorkspaceFolder[]>;
   removeWorkspace(id: string): Promise<WorkspaceFolder[]>;
   indexWorkspace(id: string): Promise<IndexStatus>;
   getIndexStatus(id: string): Promise<IndexStatus | null>;

@@ -5,4 +5,5 @@
  * all wrap the same Host so they run identical behavior.
  */
 export { createHost, type Host } from './host.js';
+export { createDispatcher } from './dispatch.js';
 export { dataDir, setDataDir } from './paths.js';

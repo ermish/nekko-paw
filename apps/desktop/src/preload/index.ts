@@ -50,6 +50,7 @@ const api: NekkoApi = {
 
   listWorkspaces: () => inv(IpcChannels.workspaceList),
   addWorkspace: () => inv(IpcChannels.workspaceAdd),
+  addWorkspaceByPath: (path) => inv(IpcChannels.workspaceAddByPath, path),
   removeWorkspace: (id) => inv(IpcChannels.workspaceRemove, id),
   indexWorkspace: (id) => inv(IpcChannels.workspaceIndex, id),
   getIndexStatus: (id) => inv(IpcChannels.workspaceIndexStatus, id),

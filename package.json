@@ -9,14 +9,17 @@
     "packages/shared",
     "packages/core",
     "packages/host",
-    "apps/desktop"
+    "apps/desktop",
+    "apps/server"
   ],
   "scripts": {
     "build": "npm run build:core && npm run build -w @nekko/host && npm run build -w @nekko/desktop",
     "build:core": "npm run build -w @nekko/shared && npm run build -w @nekko/core",
+    "build:web": "npm run build:core && npm run build -w @nekko/host && npm run build -w @nekko/desktop && npm run build -w @nekko/server",
     "dev": "npm run dev -w @nekko/desktop",
+    "web": "npm run build:web && npm run start -w @nekko/server",
     "test": "npm run test -w @nekko/core",
-    "typecheck": "npm run typecheck -w @nekko/shared && npm run typecheck -w @nekko/core && npm run typecheck -w @nekko/host && npm run typecheck -w @nekko/desktop",
+    "typecheck": "npm run typecheck -w @nekko/shared && npm run typecheck -w @nekko/core && npm run typecheck -w @nekko/host && npm run typecheck -w @nekko/desktop && npm run typecheck -w @nekko/server",
     "dist": "npm run build && npm run dist -w @nekko/desktop"
   },
   "engines": {
