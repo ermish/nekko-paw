@@ -22,7 +22,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      # Build + publish installers to the GitHub Release for this tag.
-      - run: npm run dist -w @nekko/desktop
+      # Build installers (Windows: MSI + NSIS, macOS: dmg/zip, Linux: AppImage/deb)
+      # and upload them to a draft GitHub Release for this tag.
+      - run: npm run release -w @nekko/desktop
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
