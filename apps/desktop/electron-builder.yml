@@ -15,12 +15,15 @@ publish:
   repo: nekko-paw
 win:
   target:
+    - msi
     - nsis
     - zip
   artifactName: ${productName}-${version}-${arch}.${ext}
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
+msi:
+  oneClick: false
 mac:
   target:
     - dmg
