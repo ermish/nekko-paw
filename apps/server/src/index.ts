@@ -2,7 +2,6 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { randomUUID } from 'node:crypto';
 import Fastify from 'fastify';
 import fastifyStatic from '@fastify/static';
 import websocket from '@fastify/websocket';
@@ -15,8 +14,11 @@ const PORT = Number(process.env.NEKKO_PORT ?? 4317);
 const HOST = process.env.NEKKO_HOST ?? '127.0.0.1';
 const isLocal = HOST === '127.0.0.1' || HOST === 'localhost' || HOST === '::1';
 const DATA_DIR = process.env.NEKKO_DATA_DIR ?? join(homedir(), '.nekko-paw');
-// When exposed beyond localhost, require a token (provided or generated).
-const TOKEN = process.env.NEKKO_TOKEN ?? (isLocal ? '' : randomUUID());
+// Auth is required iff a token is configured. (Containers must bind 0.0.0.0 but
+// are typically published only to the host's localhost, so we don't force a
+// token just because of the bind address — set NEKKO_TOKEN when truly exposed.)
+const TOKEN = process.env.NEKKO_TOKEN ?? '';
+const requireAuth = TOKEN !== '';
 
 const RENDERER_DIR =
   process.env.NEKKO_RENDERER_DIR ?? resolve(__dirname, '../../desktop/out/renderer');
@@ -35,11 +37,11 @@ async function main() {
   const app = Fastify({ bodyLimit: 25 * 1024 * 1024 });
   await app.register(websocket);
 
-  // Auth: only enforced when the server is bound beyond localhost.
-  const authorized = (suppliedToken: string | undefined) => isLocal || (!!TOKEN && suppliedToken === TOKEN);
+  // Auth: only enforced when a token is configured (NEKKO_TOKEN).
+  const authorized = (suppliedToken: string | undefined) => !requireAuth || suppliedToken === TOKEN;
 
   app.addHook('onRequest', async (req, reply) => {
-    if (isLocal || !req.url.startsWith('/api/')) return;
+    if (!requireAuth || !req.url.startsWith('/api/')) return;
     const header = req.headers['authorization'];
     const bearer = typeof header === 'string' && header.startsWith('Bearer ') ? header.slice(7) : undefined;
     const q = (req.query as Record<string, string> | undefined)?.token;
@@ -58,7 +60,7 @@ async function main() {
 
   // Stream agent + index events over a WebSocket.
   app.get('/api/events', { websocket: true }, (socket: any, req) => {
-    if (!isLocal) {
+    if (requireAuth) {
       const q = (req.query as Record<string, string> | undefined)?.token;
       if (!authorized(q)) {
         socket.close();
@@ -82,7 +84,9 @@ async function main() {
   const url = `http://${isLocal ? 'localhost' : HOST}:${PORT}`;
   console.log(`\n🐾 Nekko Paw web edition running at ${url}`);
   console.log(`   data dir: ${DATA_DIR}`);
-  if (!isLocal && TOKEN) console.log(`   access token: ${TOKEN}  (append ?token=${TOKEN} to the URL)`);
+  if (requireAuth) console.log(`   auth: token required (append ?token=… to the URL)`);
+  else if (!isLocal)
+    console.log(`   ⚠ bound to ${HOST} without a token — set NEKKO_TOKEN to require auth before exposing publicly.`);
   console.log(`   (offline-first — only reaches the model servers + connectors you configure)\n`);
 }
 

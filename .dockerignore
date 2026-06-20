@@ -1,0 +1,11 @@
+node_modules
+**/node_modules
+**/dist
+**/out
+release
+.git
+.github
+*.log
+coverage
+docs/screenshots
+.DS_Store

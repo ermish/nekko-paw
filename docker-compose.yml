@@ -1,0 +1,29 @@
+# Nekko Paw — self-hosted web edition in Docker.
+#   docker compose up        (build + run)
+# Then open http://localhost:4317
+services:
+  nekko:
+    build: .
+    # Or use a published image instead of building:
+    # image: ghcr.io/ermish/nekko-paw:latest
+    # Published to the host's localhost only. To expose on your LAN, change to
+    # "4317:4317" AND set NEKKO_TOKEN below.
+    ports:
+      - "127.0.0.1:4317:4317"
+    volumes:
+      # Codebases the agent may read/edit (workspace-jail sandbox confines it here).
+      - ./workspace:/workspace
+      # Settings, sessions, memory, usage.
+      - nekko-data:/data
+    environment:
+      - NEKKO_SANDBOX=workspace-jail
+      # Uncomment to require an access token (recommended if exposing beyond localhost):
+      # - NEKKO_TOKEN=change-me
+    # Lets the container reach a model server (Ollama/LM Studio/vLLM) on the host,
+    # e.g. base URL http://host.docker.internal:1234
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+volumes:
+  nekko-data: {}
