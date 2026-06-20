@@ -5,7 +5,7 @@ services:
   nekko:
     build: .
     # Or use a published image instead of building:
-    # image: ghcr.io/ermish/nekko-paw:latest
+    # image: ghcr.io/nekko-labs/nekko-paw:latest
     # Published to the host's localhost only. To expose on your LAN, change to
     # "4317:4317" AND set NEKKO_TOKEN below.
     ports:

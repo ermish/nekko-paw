@@ -7,7 +7,7 @@ Thanks for your interest! Nekko Paw is an open-source, local-first AI coding & c
 Requires Node 20+. The project uses **npm workspaces** (not pnpm/yarn).
 
 ```bash
-git clone https://github.com/ermish/nekko-paw
+git clone https://github.com/nekko-labs/nekko-paw
 cd nekko-paw
 npm install
 npm run build:core   # build the shared + core packages first

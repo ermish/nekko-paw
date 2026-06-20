@@ -140,4 +140,4 @@ on `v*` tags. Download links on the [website](apps/website) point there.
 
 ## License
 
-MIT © ermish
+MIT © Nekko Labs

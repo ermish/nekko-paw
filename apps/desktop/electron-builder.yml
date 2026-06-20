@@ -1,6 +1,6 @@
-appId: dev.ermish.nekkopaw
+appId: dev.nekkolabs.nekkopaw
 productName: Nekko Paw
-copyright: Copyright © 2026 ermish
+copyright: Copyright © 2026 Nekko Labs
 directories:
   output: release
   buildResources: build
@@ -11,7 +11,7 @@ extraMetadata:
   main: out/main/index.js
 publish:
   provider: github
-  owner: ermish
+  owner: nekko-labs
   repo: nekko-paw
 win:
   target:
