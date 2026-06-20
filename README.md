@@ -18,6 +18,17 @@ guardrails for risky commands, an out-of-the-box sandbox, multi-folder code
 indexing, memory management, connectors, and an 8-bit cat mascot that makes
 biscuits while the model thinks.
 
+![Nekko Paw — unified chat with the Context Inspector](docs/screenshots/chat.png)
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/models.png" alt="Models — local + cloud providers with usage analytics" /></td>
+    <td width="50%"><img src="docs/screenshots/guardrails.png" alt="Settings — sandbox modes and guardrail rules" /></td>
+  </tr>
+</table>
+
+> A full picture-by-picture tour is in the **[walkthrough guide](docs/WALKTHROUGH.md)**.
+
 ## Features
 
 - **Unified chat / cowork / code** — one thread, no mode switching.
