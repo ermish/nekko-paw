@@ -48,6 +48,7 @@ export interface Session {
 /** Streaming events emitted by the agent loop. */
 export type AgentEvent =
   | { type: 'text'; sessionId: string; delta: string }
+  | { type: 'reasoning'; sessionId: string; delta: string }
   | { type: 'tool_call'; sessionId: string; call: ToolCall }
   | { type: 'tool_approval_required'; sessionId: string; call: ToolCall; reason: string; severity: 'low' | 'medium' | 'high' }
   | { type: 'tool_result'; sessionId: string; result: ToolResult }

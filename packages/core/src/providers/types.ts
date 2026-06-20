@@ -20,6 +20,7 @@ export interface ChatRequest {
 /** Streamed chunk from a provider, normalized. */
 export type ProviderChunk =
   | { type: 'text'; delta: string }
+  | { type: 'reasoning'; delta: string }
   | { type: 'tool_call'; call: ToolCall }
   | { type: 'usage'; inputTokens: number; outputTokens: number }
   | { type: 'done' };

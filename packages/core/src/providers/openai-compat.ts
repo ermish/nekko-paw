@@ -10,6 +10,23 @@ import { parseSSE } from './sse.js';
 export class OpenAICompatProvider implements Provider {
   constructor(public readonly config: ProviderConfig) {}
 
+  /**
+   * Normalized API base. LM Studio / vLLM / generic servers expose the OpenAI
+   * routes under `/v1`, but users often paste just `http://host:port`. If the
+   * configured URL has no path (or a bare `/`), append `/v1` so `/models` and
+   * `/chat/completions` resolve. URLs that already include a path are left alone.
+   */
+  private base(): string {
+    let url = this.config.baseUrl.trim().replace(/\/+$/, '');
+    try {
+      const u = new URL(url);
+      if (u.pathname === '' || u.pathname === '/') url = `${url}/v1`;
+    } catch {
+      /* leave as-is if it isn't a parseable URL */
+    }
+    return url;
+  }
+
   private headers(): Record<string, string> {
     const h: Record<string, string> = { 'Content-Type': 'application/json' };
     if (this.config.apiKey) h['Authorization'] = `Bearer ${this.config.apiKey}`;
@@ -21,7 +38,7 @@ export class OpenAICompatProvider implements Provider {
   }
 
   async listModels(): Promise<ModelInfo[]> {
-    const res = await fetch(`${this.config.baseUrl}/models`, { headers: this.headers() });
+    const res = await fetch(`${this.base()}/models`, { headers: this.headers() });
     if (!res.ok) throw new Error(`listModels ${res.status}`);
     const json = (await res.json()) as { data?: Array<{ id: string; context_length?: number }> };
     return (json.data ?? []).map((m) => ({
@@ -34,7 +51,7 @@ export class OpenAICompatProvider implements Provider {
 
   async test(): Promise<{ ok: boolean; message: string }> {
     try {
-      const res = await fetch(`${this.config.baseUrl}/models`, { headers: this.headers() });
+      const res = await fetch(`${this.base()}/models`, { headers: this.headers() });
       return res.ok
         ? { ok: true, message: 'Connected' }
         : { ok: false, message: `HTTP ${res.status}` };
@@ -53,7 +70,7 @@ export class OpenAICompatProvider implements Provider {
       tools: req.tools?.map(toOpenAITool),
     };
 
-    const res = await fetch(`${this.config.baseUrl}/chat/completions`, {
+    const res = await fetch(`${this.base()}/chat/completions`, {
       method: 'POST',
       headers: this.headers(),
       body: JSON.stringify(body),
@@ -76,6 +93,12 @@ export class OpenAICompatProvider implements Provider {
       }
       const choice = chunk.choices?.[0];
       const delta = choice?.delta;
+      // Reasoning models (e.g. Gemma/DeepSeek on LM Studio) stream their chain
+      // of thought as `reasoning_content` (or `reasoning`) before the answer.
+      const reasoning = delta?.reasoning_content ?? delta?.reasoning;
+      if (reasoning) {
+        yield { type: 'reasoning', delta: reasoning as string };
+      }
       if (delta?.content) {
         yield { type: 'text', delta: delta.content as string };
       }

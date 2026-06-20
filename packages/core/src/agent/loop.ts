@@ -57,6 +57,9 @@ export async function* runAgent(opts: RunAgentOptions): AsyncGenerator<AgentEven
             text += chunk.delta;
             yield { type: 'text', sessionId: opts.sessionId, delta: chunk.delta };
             break;
+          case 'reasoning':
+            yield { type: 'reasoning', sessionId: opts.sessionId, delta: chunk.delta };
+            break;
           case 'tool_call':
             calls.push(chunk.call);
             yield { type: 'tool_call', sessionId: opts.sessionId, call: chunk.call };

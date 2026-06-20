@@ -71,4 +71,41 @@ describe('OpenAICompatProvider.chat', () => {
     const models = await new OpenAICompatProvider(cfg).listModels();
     expect(models[0]).toMatchObject({ id: 'llama3', providerId: 'p1', contextLength: 8192 });
   });
+
+  it('appends /v1 when the base URL has no path', async () => {
+    const spy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(new Response(JSON.stringify({ data: [] }), { status: 200 }));
+    const bare: ProviderConfig = { ...cfg, baseUrl: 'http://10.5.0.2:1338' };
+    await new OpenAICompatProvider(bare).listModels();
+    expect(spy).toHaveBeenCalledWith('http://10.5.0.2:1338/v1/models', expect.anything());
+  });
+
+  it('leaves an explicit path untouched', async () => {
+    const spy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(new Response(JSON.stringify({ data: [] }), { status: 200 }));
+    await new OpenAICompatProvider(cfg).listModels(); // cfg ends in /v1
+    expect(spy).toHaveBeenCalledWith('http://localhost:9999/v1/models', expect.anything());
+  });
+
+  it('surfaces reasoning_content as reasoning chunks, separate from the answer', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      sseResponse([
+        'data: {"choices":[{"delta":{"reasoning_content":"Let me think"}}]}\n\n',
+        'data: {"choices":[{"delta":{"reasoning_content":" carefully."}}]}\n\n',
+        'data: {"choices":[{"delta":{"content":"42"}}]}\n\n',
+        'data: {"choices":[{"delta":{},"finish_reason":"stop"}]}\n\n',
+        'data: [DONE]\n\n',
+      ]),
+    );
+    let reasoning = '';
+    let answer = '';
+    for await (const c of new OpenAICompatProvider(cfg).chat({ model: 'm', messages: [] })) {
+      if (c.type === 'reasoning') reasoning += c.delta;
+      if (c.type === 'text') answer += c.delta;
+    }
+    expect(reasoning).toBe('Let me think carefully.');
+    expect(answer).toBe('42');
+  });
 });

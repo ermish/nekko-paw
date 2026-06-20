@@ -32,6 +32,7 @@ export function ChatView() {
   const [draft, setDraft] = useState('');
   const [streaming, setStreaming] = useState(false);
   const [liveText, setLiveText] = useState('');
+  const [liveReasoning, setLiveReasoning] = useState('');
   const [liveTools, setLiveTools] = useState<ToolCall[]>([]);
   const [approval, setApproval] = useState<PendingApproval | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -50,6 +51,9 @@ export function ChatView() {
         case 'text':
           setLiveText((t) => t + e.delta);
           break;
+        case 'reasoning':
+          setLiveReasoning((t) => t + e.delta);
+          break;
         case 'tool_call':
           setLiveTools((tc) => [...tc, e.call]);
           break;
@@ -64,6 +68,7 @@ export function ChatView() {
           useStore.getState().pushToast('error', e.message || 'Something went wrong.');
           setStreaming(false);
           setLiveText('');
+          setLiveReasoning('');
           setLiveTools([]);
           setMascotMood('idle');
           if (activeSessionId) window.nekko.getSession(activeSessionId).then(setSession);
@@ -72,6 +77,7 @@ export function ChatView() {
         case 'done':
           setStreaming(false);
           setLiveText('');
+          setLiveReasoning('');
           setLiveTools([]);
           setMascotMood('idle');
           if (activeSessionId) window.nekko.getSession(activeSessionId).then(setSession);
@@ -105,6 +111,7 @@ export function ChatView() {
     setDraft('');
     setStreaming(true);
     setLiveText('');
+    setLiveReasoning('');
     setLiveTools([]);
     setMascotMood('thinking');
     // Optimistically show the user's message.
@@ -197,11 +204,12 @@ export function ChatView() {
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 py-6">
           <div className="mx-auto max-w-3xl space-y-5">
-            {!session?.messages.length && !liveText && <Welcome hasProvider={hasProvider} />}
+            {!session?.messages.length && !liveText && !liveReasoning && <Welcome hasProvider={hasProvider} />}
             {session?.messages.map((m, i) => <MessageBubble key={m.id + i} message={m} />)}
+            {liveReasoning && <ReasoningBlock text={liveReasoning} live={!liveText} />}
             {liveTools.map((t) => <ToolCard key={t.id} call={t} />)}
             {liveText && <MessageBubble message={{ id: 'live', role: 'assistant', content: liveText, createdAt: 0 }} />}
-            {streaming && !liveText && !liveTools.length && (
+            {streaming && !liveText && !liveReasoning && !liveTools.length && (
               <div className="flex items-center gap-2 text-[13px] text-ink-faint">
                 <span className="h-2 w-2 animate-pulse rounded-full bg-accent" /> Nekko is thinking…
               </div>
@@ -257,6 +265,35 @@ function Welcome({ hasProvider }: { hasProvider: boolean }) {
           ? 'Ask a question, or tell Nekko to make a change. It works in your folders, respects your guardrails, and shows you every file it touches.'
           : 'Head to Models to connect a local server (Ollama / LM Studio / vLLM) or a cloud provider, then come back here.'}
       </p>
+    </div>
+  );
+}
+
+/** Collapsible, dimmed view of a reasoning model's chain of thought. */
+function ReasoningBlock({ text, live }: { text: string; live: boolean }) {
+  const [open, setOpen] = useState(true);
+  // Auto-collapse once the model moves on to the actual answer.
+  useEffect(() => {
+    if (!live) setOpen(false);
+  }, [live]);
+  return (
+    <div className="fade-in">
+      <button
+        className="flex items-center gap-2 text-[12px] text-ink-faint hover:text-ink-soft"
+        onClick={() => setOpen((o) => !o)}
+      >
+        <span className={live ? 'h-2 w-2 animate-pulse rounded-full bg-accent' : 'h-2 w-2 rounded-full bg-ink-faint'} />
+        {live ? 'Thinking…' : 'Thought process'}
+        <span className="text-[10px]">{open ? '▾' : '▸'}</span>
+      </button>
+      {open && (
+        <div
+          className="mt-1.5 max-h-56 overflow-y-auto whitespace-pre-wrap rounded-xl border border-line px-3 py-2 text-[12.5px] leading-relaxed text-ink-faint"
+          style={{ background: 'var(--surface-2)' }}
+        >
+          {text}
+        </div>
+      )}
     </div>
   );
 }
