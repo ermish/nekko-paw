@@ -106,7 +106,9 @@ export function ChatControls({
                 >
                   <span className="mt-0.5 text-[12px]" style={{ color: on ? 'var(--accent)' : 'var(--ink-faint)' }}>{on ? '☑' : '☐'}</span>
                   <span className="min-w-0">
-                    <span className="block font-mono text-[12px]">{t.name}</span>
+                    <span className="block font-mono text-[12px]">
+                      {t.name.startsWith('mcp__') ? `🔌 ${t.name.split('__').slice(2).join('__')}` : t.name}
+                    </span>
                     <span className="block truncate text-[10.5px] text-ink-faint">{t.description}</span>
                   </span>
                 </button>

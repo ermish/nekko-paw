@@ -138,6 +138,11 @@ export function isMcpTool(name: string): boolean {
   return name.startsWith('mcp__');
 }
 
+/** Lightweight {name, description} list of connected MCP tools (for the UI). */
+export function mcpToolList(): Array<{ name: string; description: string }> {
+  return mcpToolSpecs().map((t) => ({ name: t.name, description: t.description ?? '' }));
+}
+
 /** Route an `mcp__<id>__<tool>` call to the right server. */
 export async function callMcpTool(call: ToolCall): Promise<ToolResult> {
   const parts = call.name.split('__');
