@@ -39,7 +39,7 @@ import { indexWorkspace, getIndexStatus, searchWorkspace, listIndexedFiles } fro
 import { sendChat, abortChat, resolveApproval, previewContext, setContextPrefs } from './chat.js';
 import { buildSpec, specPathForSession } from './spec.js';
 import { connectRelayAgent, type RelayAgentHandle } from './relay.js';
-import { syncMcp, mcpStatus } from './mcp.js';
+import { syncMcp, mcpStatus, mcpToolList } from './mcp.js';
 import { randomUUID } from 'crypto';
 
 /**
@@ -219,7 +219,7 @@ export function createHost(opts: { dataDir: string }): Host {
       clearUsage();
       return resetSettings();
     },
-    listTools: () => BUILTIN_TOOLS.map((t) => ({ name: t.name, description: t.description })),
+    listTools: () => [...BUILTIN_TOOLS.map((t) => ({ name: t.name, description: t.description })), ...mcpToolList()],
     sendChat: (o) => sendChat(o, (e) => events.emit('agentEvent', e)),
     abortChat,
     approveTool: (_sessionId, toolCallId, approved) => resolveApproval(toolCallId, approved),

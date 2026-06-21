@@ -174,12 +174,13 @@ export async function sendChat(opts: SendOptions, send: Sender): Promise<void> {
   const mode = session.mode ?? settings.defaultChatMode ?? 'guardrails';
   const offline = !!session.offline;
   const incognito = !!session.incognito;
-  // Offline disables tool calls entirely; otherwise drop any the user turned off
-  // and add the connected MCP servers' tools.
-  let tools = offline ? [] : BUILTIN_TOOLS.filter((t) => !(session.disabledTools ?? []).includes(t.name));
-  if (!offline && settings.mcpServers?.some((s) => s.enabled)) {
-    await syncMcp(settings.mcpServers);
-    tools = [...tools, ...mcpToolSpecs()];
+  // Offline disables tool calls entirely; otherwise combine builtins + connected
+  // MCP tools, then drop any the user turned off for this chat.
+  let tools: typeof BUILTIN_TOOLS = [];
+  if (!offline) {
+    if (settings.mcpServers?.some((s) => s.enabled)) await syncMcp(settings.mcpServers);
+    const disabled = new Set(session.disabledTools ?? []);
+    tools = [...BUILTIN_TOOLS, ...mcpToolSpecs()].filter((t) => !disabled.has(t.name));
   }
   // Persist only when not incognito.
   const persist = () => { if (!incognito) saveSession(session); };
