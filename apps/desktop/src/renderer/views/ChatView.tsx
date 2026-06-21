@@ -50,6 +50,7 @@ export function ChatView() {
   const [atFiles, setAtFiles] = useState<IndexedFile[]>([]);
   const [cost, setCost] = useState(0);
   const [chatQuery, setChatQuery] = useState('');
+  const [tagFilter, setTagFilter] = useState<string | null>(null);
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameDraft, setRenameDraft] = useState('');
   const [menuId, setMenuId] = useState<string | null>(null);
@@ -144,15 +145,23 @@ export function ChatView() {
     setActiveSession(s.id);
   };
 
-  const filteredSessions = (chatQuery.trim()
-    ? sessions.filter((s) => s.title.toLowerCase().includes(chatQuery.toLowerCase()))
-    : sessions
-  )
+  const allTags = [...new Set(sessions.flatMap((s) => s.tags ?? []))].sort();
+  const filteredSessions = sessions
+    .filter((s) => !chatQuery.trim() || s.title.toLowerCase().includes(chatQuery.toLowerCase()))
+    .filter((s) => !tagFilter || (s.tags ?? []).includes(tagFilter))
     .slice()
     .sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0)); // pinned first (stable)
 
   const togglePin = async (s: Session) => {
     await window.nekko.setSessionOptions(s.id, { pinned: !s.pinned });
+    refreshSessions();
+  };
+
+  const editTags = async (s: Session) => {
+    const next = window.prompt('Tags (comma-separated):', (s.tags ?? []).join(', '));
+    if (next === null) return;
+    const tags = next.split(',').map((t) => t.trim()).filter(Boolean);
+    await window.nekko.setSessionOptions(s.id, { tags });
     refreshSessions();
   };
 
@@ -323,6 +332,20 @@ export function ChatView() {
             value={chatQuery}
             onChange={(e) => setChatQuery(e.target.value)}
           />
+          {allTags.length > 0 && (
+            <div className="mt-1.5 flex flex-wrap gap-1">
+              {allTags.map((t) => (
+                <button
+                  key={t}
+                  className={`chip text-[10px] ${tagFilter === t ? '!text-white' : ''}`}
+                  style={tagFilter === t ? { background: 'var(--accent)' } : undefined}
+                  onClick={() => setTagFilter(tagFilter === t ? null : t)}
+                >
+                  #{t}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
         <div className="flex-1 space-y-1 overflow-y-auto px-2 pb-2">
           {sessions.length === 0 && <p className="px-2 text-[12px] text-ink-faint">No chats yet.</p>}
@@ -348,10 +371,19 @@ export function ChatView() {
                   onBlur={() => commitRename(s.id)}
                 />
               ) : (
-                <span className="flex min-w-0 items-center gap-1.5 truncate" onDoubleClick={(ev) => { ev.stopPropagation(); setRenamingId(s.id); setRenameDraft(s.title); }}>
-                  {s.pinned && <PinIcon2 className="h-3 w-3 shrink-0 text-accent" />}
-                  <span className="truncate">{s.title}</span>
-                </span>
+                <div className="flex min-w-0 flex-col" onDoubleClick={(ev) => { ev.stopPropagation(); setRenamingId(s.id); setRenameDraft(s.title); }}>
+                  <span className="flex items-center gap-1.5 truncate">
+                    {s.pinned && <PinIcon2 className="h-3 w-3 shrink-0 text-accent" />}
+                    <span className="truncate">{s.title}</span>
+                  </span>
+                  {!!s.tags?.length && (
+                    <span className="mt-0.5 flex flex-wrap gap-1">
+                      {s.tags.map((t) => (
+                        <span key={t} className="rounded px-1 text-[9px] text-ink-faint" style={{ background: 'var(--surface-2)' }}>#{t}</span>
+                      ))}
+                    </span>
+                  )}
+                </div>
               )}
               <div className="relative shrink-0">
                 <button
@@ -368,6 +400,9 @@ export function ChatView() {
                     </button>
                     <button className="block w-full rounded-md px-2 py-1.5 text-left text-[12px] hover:bg-surface-2" onClick={() => { setRenamingId(s.id); setRenameDraft(s.title); setMenuId(null); }}>
                       Rename
+                    </button>
+                    <button className="block w-full rounded-md px-2 py-1.5 text-left text-[12px] hover:bg-surface-2" onClick={() => { setMenuId(null); editTags(s); }}>
+                      Edit tags…
                     </button>
                     <button
                       className="block w-full rounded-md px-2 py-1.5 text-left text-[12px] text-red-400 hover:bg-surface-2"
