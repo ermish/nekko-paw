@@ -12,9 +12,25 @@ drives the agent running on your machine.
 
 1. On your **computer**: Open Paw → *Settings → Remote access → Enable*. It shows
    a room code, key, a pairing link, and a QR.
-2. In the **phone app**: paste the pairing link on the first-run screen. The creds
-   are stored locally and the app connects to your computer through the relay.
-   (Camera QR scan is the next step — see *Next steps*.)
+2. In the **phone app**: **Scan QR code** (camera) or paste the pairing link on the
+   first-run screen. The creds are stored locally and the app connects to your
+   computer through the relay.
+
+## Notifications
+
+When a task you started finishes while the app is backgrounded, you get a **local
+notification** ("Nekko finished") — no push server, no APNs/FCM setup needed
+(uses `@capacitor/local-notifications`). True remote/background push (when the app
+is fully closed) would need APNs + FCM + a sender backend — not wired yet.
+
+## Permissions (native projects)
+
+After `cap add`, add these to the generated native projects:
+
+- **iOS** — in `ios/App/App/Info.plist`:
+  - `NSCameraUsageDescription` = "Scan the pairing QR code from your computer." (QR scan)
+- **Android** — `cap add android` already declares camera/notification permissions
+  for the plugins; the QR scanner requests camera at runtime.
 
 ## Build & run
 
@@ -44,7 +60,6 @@ After changing the web UI, re-run `npm run sync-web && npx cap sync`.
 
 ## Next steps (tracked)
 
-- **QR pairing** via `@capacitor/mlkit/barcode-scanning` (camera) instead of paste.
-- **Push notifications** when a long agent run finishes.
 - Native **secure storage** (`@capacitor/preferences` is installed) for the relay key.
+- **Remote push** (APNs + FCM + sender) for notifications when the app is closed.
 - App Store / Play Store metadata + signing (needs the developer accounts).
