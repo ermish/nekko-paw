@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { Suspense, lazy, useState } from 'react';
+
+// Lazy so jsQR is code-split out of the main bundle (only fetched when scanning).
+const QrScanner = lazy(() => import('./QrScanner.js').then((m) => ({ default: m.QrScanner })));
 
 /** Persisted relay pairing creds (set here, read by web-client.ts). */
 const LS_RELAY = 'op_relay';
@@ -43,18 +46,36 @@ export function RelayPairing() {
   const [show] = useState(() => isNativeApp() && !alreadyPaired());
   const [input, setInput] = useState('');
   const [error, setError] = useState('');
+  const [scanning, setScanning] = useState(false);
 
   if (!show) return null;
 
-  const pair = () => {
-    const creds = parsePairing(input.trim());
+  const commit = (raw: string): boolean => {
+    const creds = parsePairing(raw.trim());
     if (!creds) {
       setError('That doesn’t look like a pairing link. Copy it from Settings → Remote access on your computer.');
-      return;
+      return false;
     }
     localStorage.setItem(LS_RELAY, JSON.stringify(creds));
     location.reload();
+    return true;
   };
+
+  const pair = () => commit(input);
+
+  if (scanning) {
+    return (
+      <Suspense fallback={<div className="fixed inset-0 z-[60] bg-black" />}>
+        <QrScanner
+          onClose={() => setScanning(false)}
+          onResult={(text) => {
+            setScanning(false);
+            if (!commit(text)) setError('That QR isn’t an Open Paw pairing code.');
+          }}
+        />
+      </Suspense>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center p-6" style={{ background: 'var(--paper)' }}>
@@ -72,6 +93,12 @@ export function RelayPairing() {
       />
       {error && <p className="mt-2 max-w-sm text-center text-[12px]" style={{ color: '#e0574a' }}>{error}</p>}
       <button className="btn btn-primary mt-4 w-full max-w-sm" onClick={pair} disabled={!input.trim()}>Pair</button>
+      <div className="my-3 flex w-full max-w-sm items-center gap-3 text-[11px] text-ink-faint">
+        <span className="h-px flex-1" style={{ background: 'var(--line)' }} /> or <span className="h-px flex-1" style={{ background: 'var(--line)' }} />
+      </div>
+      <button className="btn btn-outline w-full max-w-sm" onClick={() => { setError(''); setScanning(true); }}>
+        📷 Scan QR code
+      </button>
     </div>
   );
 }

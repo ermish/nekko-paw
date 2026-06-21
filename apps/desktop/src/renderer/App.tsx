@@ -67,6 +67,31 @@ export function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Native (mobile) only: notify when an agent run finishes while the app is
+  // backgrounded. Local notification — no push backend / APNs / FCM needed.
+  useEffect(() => {
+    const cap = (window as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor;
+    if (!cap?.isNativePlatform?.()) return;
+    let off: (() => void) | undefined;
+    let nid = 1;
+    (async () => {
+      try {
+        const { LocalNotifications } = await import('@capacitor/local-notifications');
+        await LocalNotifications.requestPermissions();
+        off = window.nekko.onAgentEvent((e) => {
+          if (e.type === 'done' && document.hidden) {
+            LocalNotifications.schedule({
+              notifications: [{ id: nid++, title: 'Nekko finished', body: 'Your task is ready in Open Paw.' }],
+            }).catch(() => {});
+          }
+        });
+      } catch {
+        /* plugin unavailable */
+      }
+    })();
+    return () => off?.();
+  }, []);
+
   return (
     <div className="flex h-full w-full" style={{ background: 'var(--paper)' }}>
       {/* Left rail */}
