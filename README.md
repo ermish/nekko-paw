@@ -48,6 +48,12 @@ xattr -cr "/Applications/Open Paw.app"
 
 Then open it normally. (Alternatively: right-click the app → **Open** → **Open**.) We'll drop this step once notarized builds are signed. Windows may also show a SmartScreen "unknown publisher" prompt — choose **More info → Run anyway**.
 
+### Uninstalling
+
+- **Windows** — *Settings → Apps → Installed apps → Open Paw → Uninstall*, or the **Uninstall Open Paw** shortcut in the Start Menu folder. The uninstaller asks whether to also delete your chats and settings (choose **No** to keep them for a reinstall).
+- **macOS** — drag **Open Paw** from Applications to the Trash. To also remove data: `rm -rf "$HOME/Library/Application Support/Open Paw"`.
+- **Linux** — remove the AppImage, or `sudo apt remove open-paw` for the `.deb`.
+
 ## Why Open Paw
 
 **LM Studio runs models. Open Paw runs *with your work*.** Local model UIs are

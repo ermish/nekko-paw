@@ -27,6 +27,12 @@ nsis:
   installerHeader: build/installerHeader.bmp
   installerIcon: build/icon.ico
   uninstallerIcon: build/icon.ico
+  # Add/Remove Programs + Start Menu uninstall entry, with a Start Menu folder.
+  menuCategory: true
+  createStartMenuShortcut: true
+  uninstallDisplayName: Open Paw
+  # Custom uninstall hook lives at build/installer.nsh — electron-builder picks
+  # it up automatically (its customUnInstall macro offers to remove user data).
 msi:
   oneClick: false
 mac:
