@@ -63,6 +63,8 @@ export interface Session {
   incognito?: boolean;
   /** Pinned to the top of the chat list. */
   pinned?: boolean;
+  /** Free-form tags for organizing/filtering chats. */
+  tags?: string[];
   createdAt: number;
   updatedAt: number;
 }
