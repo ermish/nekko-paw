@@ -41,6 +41,7 @@ export const IpcChannels = {
   terminalShells: 'terminal:shells',
   terminalCreate: 'terminal:create',
   terminalSnapshot: 'terminal:snapshot',
+  terminalUpdate: 'terminal:update',
   terminalWrite: 'terminal:write',
   terminalResize: 'terminal:resize',
   terminalRun: 'terminal:run',
@@ -149,6 +150,8 @@ export interface NekkoApi {
   createTerminal(opts?: { workspaceId?: string; cwd?: string; title?: string; shell?: string; cols?: number; rows?: number }): Promise<TerminalInfo>;
   /** Fetch current info + retained raw scrollback (for reattaching a renderer). */
   terminalSnapshot(id: string): Promise<TerminalSnapshot | null>;
+  /** Update a terminal's project/order (sidebar drag-and-drop). */
+  updateTerminal(id: string, patch: { workspaceId?: string | null; order?: number; title?: string }): Promise<void>;
   /** Write raw input (keystrokes) to the PTY. */
   writeTerminal(id: string, data: string): Promise<void>;
   /** Tell the PTY its new viewport size so the shell reflows. */
@@ -178,7 +181,7 @@ export interface NekkoApi {
   specPath(sessionId: string): Promise<string | null>;
   setSessionOptions(
     id: string,
-    patch: Partial<Pick<Session, 'title' | 'pinned' | 'tags' | 'mode' | 'disabledTools' | 'offline' | 'incognito' | 'autoModel'>>,
+    patch: Partial<Pick<Session, 'title' | 'pinned' | 'tags' | 'order' | 'mode' | 'disabledTools' | 'offline' | 'incognito' | 'autoModel'>>,
   ): Promise<Session | null>;
   truncateSession(id: string, messageId: string): Promise<Session | null>;
   /** Delete chats within a window; returns how many were removed. */

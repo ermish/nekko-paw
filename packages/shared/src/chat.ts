@@ -75,6 +75,8 @@ export interface Session {
   pinned?: boolean;
   /** Free-form tags for organizing/filtering chats. */
   tags?: string[];
+  /** Manual sidebar position within its project (set by drag-to-reorder). */
+  order?: number;
   createdAt: number;
   updatedAt: number;
 }

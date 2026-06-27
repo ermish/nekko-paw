@@ -19,6 +19,8 @@ export interface TerminalInfo {
   /** Shell binary the PTY is running (e.g. powershell.exe, /bin/zsh). */
   shell: string;
   createdAt: number;
+  /** Manual sidebar position within its project (set by drag-to-reorder). */
+  order?: number;
   /** False once the shell process has exited. */
   running: boolean;
   exitCode?: number;

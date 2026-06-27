@@ -74,6 +74,11 @@ interface UiState {
   setActivePane: (groupId: string, paneId: string) => void;
   focusGroup: (groupId: string) => void;
   splitRight: (groupId: string, paneId: string) => void;
+
+  // Sidebar drag-and-drop: persist project order and per-project item order.
+  reorderWorkspaces: (orderedIds: string[]) => Promise<void>;
+  layoutChats: (targetWorkspaceId: string | undefined, orderedIds: string[], moveId: string | null) => Promise<void>;
+  layoutTerminals: (targetWorkspaceId: string | undefined, orderedIds: string[], moveId: string | null) => Promise<void>;
 }
 
 /** Find an existing pane for a chat/terminal ref across all groups. */
@@ -285,5 +290,27 @@ export const useStore = create<UiState>((set, get) => ({
       }
       return { groups, activeGroupId: moved.id };
     });
+  },
+
+  reorderWorkspaces: async (orderedIds) => {
+    const s = get().settings;
+    if (!s) return;
+    const byId = new Map(s.workspaces.map((w) => [w.id, w]));
+    const workspaces = orderedIds.map((id) => byId.get(id)).filter((w): w is NonNullable<typeof w> => !!w);
+    if (workspaces.length !== s.workspaces.length) return; // guard against a lost entry
+    await window.nekko.updateSettings({ workspaces });
+    await get().refreshSettings();
+  },
+
+  layoutChats: async (targetWorkspaceId, orderedIds, moveId) => {
+    if (moveId) await window.nekko.setSessionWorkspace(moveId, targetWorkspaceId);
+    await Promise.all(orderedIds.map((id, i) => window.nekko.setSessionOptions(id, { order: i })));
+    await get().refreshSessions();
+  },
+
+  layoutTerminals: async (targetWorkspaceId, orderedIds, moveId) => {
+    if (moveId) await window.nekko.updateTerminal(moveId, { workspaceId: targetWorkspaceId ?? null });
+    await Promise.all(orderedIds.map((id, i) => window.nekko.updateTerminal(id, { order: i })));
+    await get().refreshTerminals();
   },
 }));

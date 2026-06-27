@@ -55,6 +55,7 @@ import {
   runInTerminal,
   signalTerminal,
   closeTerminal,
+  updateTerminal,
 } from './terminal.js';
 import { randomUUID } from 'crypto';
 
@@ -101,6 +102,7 @@ export interface Host {
   listShells(): ShellOption[];
   createTerminal(opts?: { workspaceId?: string; cwd?: string; title?: string; shell?: string; cols?: number; rows?: number }): TerminalInfo;
   terminalSnapshot(id: string): TerminalSnapshot | null;
+  updateTerminal(id: string, patch: { workspaceId?: string | null; order?: number; title?: string }): void;
   writeTerminal(id: string, data: string): void;
   resizeTerminal(id: string, cols: number, rows: number): void;
   runInTerminal(id: string, command: string): void;
@@ -264,6 +266,7 @@ export function createHost(opts: { dataDir: string }): Host {
     listShells,
     createTerminal,
     terminalSnapshot,
+    updateTerminal,
     writeTerminal,
     resizeTerminal,
     runInTerminal,

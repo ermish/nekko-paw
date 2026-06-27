@@ -47,6 +47,7 @@ const api: NekkoApi = {
   listShells: () => inv(IpcChannels.terminalShells),
   createTerminal: (opts) => inv(IpcChannels.terminalCreate, opts),
   terminalSnapshot: (id) => inv(IpcChannels.terminalSnapshot, id),
+  updateTerminal: (id, patch) => inv(IpcChannels.terminalUpdate, id, patch),
   writeTerminal: (id, data) => inv(IpcChannels.terminalWrite, id, data),
   resizeTerminal: (id, cols, rows) => inv(IpcChannels.terminalResize, id, cols, rows),
   runInTerminal: (id, command) => inv(IpcChannels.terminalRun, id, command),

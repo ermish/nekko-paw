@@ -41,6 +41,7 @@ export function createDispatcher(host: Host): (channel: string, args: any[]) => 
     [C.terminalShells]: () => host.listShells(),
     [C.terminalCreate]: ([opts]) => host.createTerminal(opts),
     [C.terminalSnapshot]: ([id]) => host.terminalSnapshot(id),
+    [C.terminalUpdate]: ([id, patch]) => host.updateTerminal(id, patch),
     [C.terminalWrite]: ([id, data]) => host.writeTerminal(id, data),
     [C.terminalResize]: ([id, cols, rows]) => host.resizeTerminal(id, cols, rows),
     [C.terminalRun]: ([id, cmd]) => host.runInTerminal(id, cmd),

@@ -93,7 +93,22 @@ function resolveCwd(workspaceId?: string, cwd?: string): string {
 }
 
 export function listTerminals(): TerminalInfo[] {
-  return [...terms.values()].map((t) => t.info).sort((a, b) => a.createdAt - b.createdAt);
+  return [...terms.values()].map((t) => t.info).sort((a, b) => {
+    // Manually-ordered terminals first (in order), then the rest by age.
+    if (a.order != null && b.order != null) return a.order - b.order;
+    if (a.order != null) return -1;
+    if (b.order != null) return 1;
+    return a.createdAt - b.createdAt;
+  });
+}
+
+/** Update a terminal's grouping/order (used by sidebar drag-and-drop). */
+export function updateTerminal(id: string, patch: { workspaceId?: string | null; order?: number; title?: string }): void {
+  const t = terms.get(id);
+  if (!t) return;
+  if ('workspaceId' in patch) t.info.workspaceId = patch.workspaceId ?? undefined;
+  if (patch.order !== undefined) t.info.order = patch.order;
+  if (patch.title) t.info.title = patch.title;
 }
 
 export function terminalSnapshot(id: string): TerminalSnapshot | null {

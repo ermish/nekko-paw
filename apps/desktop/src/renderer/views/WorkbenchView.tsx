@@ -31,6 +31,22 @@ function StatusDot({ status, className = '' }: { status: AgentStatus; className?
   );
 }
 
+/** Something being dragged in the sidebar (a project, chat, or terminal). */
+type DragItem = { kind: 'project' | 'chat' | 'terminal'; id: string; ws: string | undefined };
+
+/**
+ * Sort by manual drag order when set, else by a fallback (recency for chats,
+ * age for terminals). Manually-ordered items sort above never-dragged ones.
+ */
+function bySidebarOrder<T extends { order?: number }>(fallback: (x: T) => number) {
+  return (a: T, b: T) => {
+    if (a.order != null && b.order != null) return a.order - b.order;
+    if (a.order != null) return -1;
+    if (b.order != null) return 1;
+    return fallback(a) - fallback(b);
+  };
+}
+
 /** Fold an agent event into the per-session status (undefined = idle). */
 function statusFromEvent(type: AgentEvent['type']): AgentStatus | null {
   switch (type) {
@@ -46,6 +62,7 @@ export function WorkbenchView() {
     sessions, terminals, groups, activeGroupId, settings, activeSessionId,
     refreshSessions, refreshTerminals, openChatPane, openTerminalPane, newTerminal,
     setActivePane, closePane, focusGroup, splitRight, newChat, setActiveWorkspace,
+    reorderWorkspaces, layoutChats, layoutTerminals,
   } = useStore();
 
   const [statuses, setStatuses] = useState<Map<string, AgentStatus>>(new Map());
@@ -53,6 +70,8 @@ export function WorkbenchView() {
   const [mobileNav, setMobileNav] = useState(false);
   const [newMenuOpen, setNewMenuOpen] = useState(false);
   const [shells, setShells] = useState<ShellOption[]>([]);
+  const [drag, setDrag] = useState<DragItem | null>(null);
+  const [dropTarget, setDropTarget] = useState<string | null>(null);
   const newMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { refreshTerminals(); }, [refreshTerminals]);
@@ -117,9 +136,61 @@ export function WorkbenchView() {
     { key: '__none', name: 'No project' },
   ];
   const topChats = (key: string) =>
-    sessions.filter((s) => !s.parentSessionId && (key === '__none' ? !s.workspaceId : s.workspaceId === key));
+    sessions
+      .filter((s) => !s.parentSessionId && (key === '__none' ? !s.workspaceId : s.workspaceId === key))
+      .sort(bySidebarOrder<Session>((s) => -s.updatedAt));
   const bucketTerminals = (key: string) =>
-    terminals.filter((t) => (key === '__none' ? !t.workspaceId : t.workspaceId === key));
+    terminals
+      .filter((t) => (key === '__none' ? !t.workspaceId : t.workspaceId === key))
+      .sort(bySidebarOrder<TerminalInfo>((t) => t.createdAt));
+
+  // --- Sidebar drag-and-drop (reorder projects; reorder/move chats + terminals) ---
+  const startDrag = (e: React.DragEvent, item: DragItem) => {
+    e.stopPropagation();
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', item.id);
+    setDrag(item);
+  };
+  const endDrag = () => { setDrag(null); setDropTarget(null); };
+  const overTarget = (e: React.DragEvent, key: string, accept: (d: DragItem) => boolean) => {
+    if (!drag || !accept(drag)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    e.dataTransfer.dropEffect = 'move';
+    if (dropTarget !== key) setDropTarget(key);
+  };
+  type Bucket = { ws?: WorkspaceFolder; key: string; name: string };
+  const dropOnBucket = (b: Bucket) => {
+    const d = drag;
+    if (!d) return endDrag();
+    if (d.kind === 'project') {
+      const ids = (settings?.workspaces ?? []).map((w) => w.id).filter((id) => id !== d.id);
+      if (!b.ws) ids.push(d.id);
+      else { const i = ids.indexOf(b.key); ids.splice(i < 0 ? ids.length : i, 0, d.id); }
+      reorderWorkspaces(ids);
+    } else if (d.kind === 'chat') {
+      const ids = topChats(b.key).map((c) => c.id).filter((id) => id !== d.id);
+      ids.push(d.id);
+      layoutChats(b.ws?.id, ids, d.ws !== b.ws?.id ? d.id : null);
+    } else {
+      const ids = bucketTerminals(b.key).map((t) => t.id).filter((id) => id !== d.id);
+      ids.push(d.id);
+      layoutTerminals(b.ws?.id, ids, d.ws !== b.ws?.id ? d.id : null);
+    }
+    endDrag();
+  };
+  const dropBeforeRow = (b: Bucket, kind: 'chat' | 'terminal', targetId: string) => {
+    const d = drag;
+    if (!d || d.kind !== kind || targetId === d.id) return endDrag();
+    const list = kind === 'chat' ? topChats(b.key).map((c) => c.id) : bucketTerminals(b.key).map((t) => t.id);
+    const ids = list.filter((id) => id !== d.id);
+    const i = ids.indexOf(targetId);
+    ids.splice(i < 0 ? ids.length : i, 0, d.id);
+    const moved = d.ws !== b.ws?.id ? d.id : null;
+    if (kind === 'chat') layoutChats(b.ws?.id, ids, moved);
+    else layoutTerminals(b.ws?.id, ids, moved);
+    endDrag();
+  };
 
   const Sidebar = (
     <div className="flex h-full w-64 flex-col border-r border-line" style={{ background: 'var(--paper)' }}>
@@ -174,9 +245,22 @@ export function WorkbenchView() {
           const terms = bucketTerminals(b.key);
           if (b.key === '__none' && chats.length === 0 && terms.length === 0) return null;
           const isCollapsed = collapsed.has(b.key);
+          const bucketActive = dropTarget === 'bucket:' + b.key;
           return (
-            <div key={b.key} className="mb-1">
-              <div className="group flex items-center gap-1 rounded-lg px-2 py-1.5 hover:bg-surface-2">
+            <div
+              key={b.key}
+              className={`mb-1 rounded-lg ${bucketActive ? 'bg-accent-soft ring-1 ring-accent/40' : ''}`}
+              onDragOver={(e) => overTarget(e, 'bucket:' + b.key, () => true)}
+              onDragLeave={() => { if (dropTarget === 'bucket:' + b.key) setDropTarget(null); }}
+              onDrop={(e) => { e.preventDefault(); dropOnBucket(b); }}
+            >
+              <div
+                className="group flex items-center gap-1 rounded-lg px-2 py-1.5 hover:bg-surface-2"
+                draggable={!!b.ws}
+                onDragStart={b.ws ? (e) => startDrag(e, { kind: 'project', id: b.ws!.id, ws: b.ws!.id }) : undefined}
+                onDragEnd={endDrag}
+                title={b.ws ? 'Drag to reorder project' : undefined}
+              >
                 <button className="flex min-w-0 flex-1 items-center gap-1.5 text-left" onClick={() => toggleCollapse(b.key)}>
                   <span className="text-[10px] text-ink-faint">{isCollapsed ? '▸' : '▾'}</span>
                   <FolderIcon className="h-3.5 w-3.5 text-ink-faint" />
@@ -195,11 +279,31 @@ export function WorkbenchView() {
                     <p className="px-3 py-1 text-[11px] text-ink-faint">Empty — start a chat or terminal.</p>
                   )}
                   {chats.map((s) => (
-                    <ChatRow key={s.id} session={s} depth={0} statuses={statuses} childrenOf={childrenOf}
-                      activeSessionId={activeSessionId} onOpen={openChatPane} />
+                    <div
+                      key={s.id}
+                      draggable
+                      onDragStart={(e) => startDrag(e, { kind: 'chat', id: s.id, ws: b.ws?.id })}
+                      onDragEnd={endDrag}
+                      onDragOver={(e) => overTarget(e, 'chatrow:' + s.id, (d) => d.kind === 'chat')}
+                      onDrop={(e) => { e.preventDefault(); e.stopPropagation(); dropBeforeRow(b, 'chat', s.id); }}
+                      className={dropTarget === 'chatrow:' + s.id ? 'rounded-lg ring-1 ring-accent/60' : ''}
+                    >
+                      <ChatRow session={s} depth={0} statuses={statuses} childrenOf={childrenOf}
+                        activeSessionId={activeSessionId} onOpen={openChatPane} />
+                    </div>
                   ))}
                   {terms.map((t) => (
-                    <TerminalRow key={t.id} term={t} onOpen={openTerminalPane} />
+                    <div
+                      key={t.id}
+                      draggable
+                      onDragStart={(e) => startDrag(e, { kind: 'terminal', id: t.id, ws: b.ws?.id })}
+                      onDragEnd={endDrag}
+                      onDragOver={(e) => overTarget(e, 'termrow:' + t.id, (d) => d.kind === 'terminal')}
+                      onDrop={(e) => { e.preventDefault(); e.stopPropagation(); dropBeforeRow(b, 'terminal', t.id); }}
+                      className={dropTarget === 'termrow:' + t.id ? 'rounded-lg ring-1 ring-accent/60' : ''}
+                    >
+                      <TerminalRow term={t} onOpen={openTerminalPane} />
+                    </div>
                   ))}
                 </div>
               )}
