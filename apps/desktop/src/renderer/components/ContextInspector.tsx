@@ -22,6 +22,31 @@ const SOURCE_COLOR: Record<ContextItem['source'], string> = {
   system: '#8a8f98',
 };
 
+/** Plain-language explanation of each context source, shown on hover. */
+const SOURCE_EXPLAIN: Record<ContextItem['source'], string> = {
+  system: "Open Paw's base instructions to the model — its role, available tools, and safety rules. Always included.",
+  guideline: 'Your project guideline files (AGENTS.md / CLAUDE.md and similar) that tell the model how to work in this repo.',
+  memory: 'Facts Open Paw remembers across chats — your preferences and project notes — that match this conversation.',
+  'attached-file': 'Files you attached to this chat. Included in full on every turn.',
+  connector: 'Content pulled from your connected tools and integrations that is relevant to this prompt.',
+  'index-snippet': "Code snippets retrieved from your workspace index that match this turn's prompt.",
+};
+
+/** A small "i" badge that reveals an explanation on hover. */
+function InfoHint({ text }: { text: string }) {
+  return (
+    <span className="group/info relative inline-flex">
+      <span className="grid h-3.5 w-3.5 cursor-help place-items-center rounded-full border border-line text-[8px] font-bold text-ink-faint">i</span>
+      <span
+        className="pointer-events-none absolute left-0 top-5 z-50 hidden w-56 rounded-xl border border-line p-2.5 text-[11px] font-normal normal-case leading-snug tracking-normal text-ink-soft shadow-lg group-hover/info:block"
+        style={{ background: 'var(--surface)' }}
+      >
+        {text}
+      </span>
+    </span>
+  );
+}
+
 /** Last path segment, handling both POSIX and Windows separators. */
 function baseName(p: string): string {
   const parts = p.split(/[\\/]/).filter(Boolean);
@@ -160,7 +185,7 @@ export function ContextInspector({ sessionId }: { sessionId: string | null }) {
 
       <div className="flex-1 space-y-5 overflow-y-auto p-4">
         {/* Sources: folders */}
-        <Section title="Folders" onAdd={addFolder} addLabel="Add folder">
+        <Section title="Folders" info="Project folders grounding this chat. The active folder's files can be read and searched by the agent, and set the working directory for terminals and tools." onAdd={addFolder} addLabel="Add folder">
           {workspaces.length === 0 && <Hint>No folder yet. Add one to ground the chat in your code.</Hint>}
           {workspaces.map((w) => {
             const active = session?.workspaceId === w.id;
@@ -180,7 +205,7 @@ export function ContextInspector({ sessionId }: { sessionId: string | null }) {
         </Section>
 
         {/* Sources: attached files */}
-        <Section title="Files" onAdd={addFiles} addLabel="Attach files">
+        <Section title="Files" info="Files you attach are pinned into every turn of this chat verbatim — use them for specs, snippets, or docs the model should always see." onAdd={addFiles} addLabel="Attach files">
           {attached.length === 0 && <Hint>Attach files to pin them into every turn of this chat.</Hint>}
           {attached.map((p) => (
             <Row
@@ -199,7 +224,7 @@ export function ContextInspector({ sessionId }: { sessionId: string | null }) {
 
         {/* Sources: guidelines & memory */}
         {(guidelineItems.length > 0 || memoryCount > 0) && (
-          <Section title="Project context">
+          <Section title="Project context" info="Always-on context from your project: guideline files (e.g. AGENTS.md) and saved memory notes relevant to this chat.">
             {guidelineItems.map((g) => (
               <Row
                 key={g.id}
@@ -220,7 +245,10 @@ export function ContextInspector({ sessionId }: { sessionId: string | null }) {
         {/* Breakdown */}
         {visible.length > 0 && (
           <div>
-            <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-ink-faint">Breakdown</div>
+            <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-ink-faint">
+              Breakdown
+              <InfoHint text="Everything entering the model's prompt this turn, grouped by where it came from. Click an item to include/exclude it; pin to always keep it." />
+            </div>
             <div className="space-y-4">
               {Object.entries(groups).map(([source, items]) => (
                 <div key={source}>
@@ -229,8 +257,9 @@ export function ContextInspector({ sessionId }: { sessionId: string | null }) {
                       className="h-2 w-2 rounded-full"
                       style={{ background: SOURCE_COLOR[source as ContextItem['source']] }}
                     />
-                    <span className="text-[11px] font-semibold uppercase tracking-wide text-ink-faint">
+                    <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-ink-faint">
                       {SOURCE_LABEL[source as ContextItem['source']]}
+                      <InfoHint text={SOURCE_EXPLAIN[source as ContextItem['source']]} />
                     </span>
                   </div>
                   <div className="space-y-1.5">
@@ -273,11 +302,13 @@ export function ContextInspector({ sessionId }: { sessionId: string | null }) {
 
 function Section({
   title,
+  info,
   onAdd,
   addLabel,
   children,
 }: {
   title: string;
+  info?: string;
   onAdd?: () => void;
   addLabel?: string;
   children: React.ReactNode;
@@ -285,7 +316,10 @@ function Section({
   return (
     <div>
       <div className="mb-1.5 flex items-center justify-between">
-        <span className="text-[11px] font-semibold uppercase tracking-wide text-ink-faint">{title}</span>
+        <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-ink-faint">
+          {title}
+          {info && <InfoHint text={info} />}
+        </span>
         {onAdd && (
           <button className="text-ink-faint hover:text-ink" title={addLabel} onClick={onAdd}>
             <PlusIcon className="h-3.5 w-3.5" />
