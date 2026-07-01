@@ -5,10 +5,10 @@ import type { DirEntry, FileContent } from '@open-paw/shared';
 /**
  * Direct, user-initiated file access for the in-app file explorer, viewer, and
  * editor. Unlike the agent's tools these are driven by explicit user clicks, so
- * they aren't sandbox-jailed — the user browses and edits their own projects.
+ * they aren't sandbox-jailed, the user browses and edits their own projects.
  */
 
-/** Editor read cap (1 MB) — large files load partially. */
+/** Editor read cap (1 MB), large files load partially. */
 const MAX_READ = 1_000_000;
 
 /** Read a file as text; flags binary (NUL byte present) and truncation. */

@@ -1,5 +1,5 @@
 /**
- * Spec-driven development — methodologies, artifact definitions, and the pure
+ * Spec-driven development, methodologies, artifact definitions, and the pure
  * helpers for parsing/toggling a tasks checklist.
  *
  * A *methodology* is an ordered set of *artifacts* (markdown files in the
@@ -10,7 +10,7 @@
  * can share it.
  */
 
-/** What kind of artifact this is — drives the generation prompt in the host. */
+/** What kind of artifact this is, drives the generation prompt in the host. */
 export type SpecDocRole = 'spec' | 'plan' | 'tasks';
 
 export interface SpecDocDef {
@@ -31,7 +31,7 @@ export interface SpecMethodology {
   label: string;
   /** One-line description of the workflow. */
   description: string;
-  /** Ordered artifacts — earlier ones are fed into later ones as context. */
+  /** Ordered artifacts, earlier ones are fed into later ones as context. */
   docs: SpecDocDef[];
 }
 
@@ -46,8 +46,8 @@ export const SPEC_METHODOLOGIES: SpecMethodology[] = [
     label: 'Spec → Plan → Tasks',
     description: 'Open Paw default: a spec, a technical plan, then a task checklist.',
     docs: [
-      { id: 'spec', filename: 'spec.md', label: 'Spec', role: 'spec', description: 'What & why — vision, users, requirements.' },
-      { id: 'plan', filename: 'plan.md', label: 'Plan', role: 'plan', description: 'How — architecture, stack, conventions.' },
+      { id: 'spec', filename: 'spec.md', label: 'Spec', role: 'spec', description: 'What & why, vision, users, requirements.' },
+      { id: 'plan', filename: 'plan.md', label: 'Plan', role: 'plan', description: 'How, architecture, stack, conventions.' },
       { id: 'tasks', filename: 'tasks.md', label: 'Tasks', role: 'tasks', description: 'Discrete, checkable work items.' },
     ],
   },

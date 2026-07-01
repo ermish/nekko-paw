@@ -39,7 +39,7 @@ jobs:
 
   ios:
     runs-on: macos-latest
-    # iOS simulator build without signing — best-effort while we finalize the
+    # iOS simulator build without signing, best-effort while we finalize the
     # native project; doesn't block the Android job.
     continue-on-error: true
     steps:

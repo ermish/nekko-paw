@@ -1,5 +1,5 @@
 /**
- * Agent orchestration — how the lead agent delegates work to sub-agents.
+ * Agent orchestration, how the lead agent delegates work to sub-agents.
  *
  * A *strategy* shapes two things: whether the `spawn_agent` tool is available
  * at all, and the guidance injected into the system prompt about when to fan
@@ -66,7 +66,7 @@ export function getStrategy(id: OrchestrationStrategy | undefined): Orchestratio
 }
 
 /**
- * The full prompt guidance for an orchestration config — the strategy hint plus
+ * The full prompt guidance for an orchestration config, the strategy hint plus
  * the concrete depth/parallel bounds. Empty string when delegation is off.
  */
 export function orchestrationPromptHint(o: OrchestrationSettings): string {

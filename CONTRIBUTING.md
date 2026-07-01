@@ -19,7 +19,7 @@ npm run dev          # launch the desktop app (electron-vite)
 | Path | What |
 | --- | --- |
 | `packages/shared` | Types + IPC contracts (pure, no runtime deps) |
-| `packages/core` | Engine: providers, agent loop, guardrails, context, indexer, memory, connectors. **No Electron imports** — unit-tested with Vitest. |
+| `packages/core` | Engine: providers, agent loop, guardrails, context, indexer, memory, connectors. **No Electron imports**, unit-tested with Vitest. |
 | `apps/desktop` | Electron app: `src/main` (Node), `src/preload` (bridge), `src/renderer` (React) |
 | `apps/website` | Static marketing site |
 | `scripts/itest-local.mjs` | Manual end-to-end test against a real model server |

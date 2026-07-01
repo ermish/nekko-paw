@@ -2,7 +2,7 @@ import { getClient, resolveModel, runChat, type Client } from './lib.js';
 
 /**
  * MCP stdio server exposing Open Paw to other tools (Claude Code, Codex, …).
- * Hand-rolled JSON-RPC 2.0 over newline-delimited stdio — the MCP stdio
+ * Hand-rolled JSON-RPC 2.0 over newline-delimited stdio, the MCP stdio
  * transport. Other agents can trigger this machine's agent, make chat requests,
  * spin up sessions (swarm by calling chat across several sessions), and read
  * status, all driving the local model.

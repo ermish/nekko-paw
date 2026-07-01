@@ -3,7 +3,7 @@
   "version": "0.3.0",
   "private": true,
   "type": "module",
-  "description": "Open Paw self-hosted web server — same engine + UI as the desktop app.",
+  "description": "Open Paw self-hosted web server, same engine + UI as the desktop app.",
   "main": "./dist/index.js",
   "bin": {
     "open-paw": "./dist/index.js"

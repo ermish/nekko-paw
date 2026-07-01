@@ -249,7 +249,7 @@ export interface NekkoApi {
 
   /** Files the agent changed this session (diff/approve). */
   listChanges(sessionId: string): Promise<FileChange[]>;
-  /** Keep a file's changes — stop tracking it. */
+  /** Keep a file's changes, stop tracking it. */
   acceptChange(sessionId: string, path: string): Promise<void>;
   /** Keep all of a session's changes. */
   acceptAllChanges(sessionId: string): Promise<void>;

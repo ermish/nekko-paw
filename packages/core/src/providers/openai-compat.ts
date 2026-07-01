@@ -4,7 +4,7 @@ import { parseSSE } from './sse.js';
 
 /**
  * Client for any OpenAI-compatible /chat/completions endpoint. Covers OpenAI,
- * OpenRouter, LM Studio, vLLM, and generic openai-compat servers — they only
+ * OpenRouter, LM Studio, vLLM, and generic openai-compat servers, they only
  * differ in base URL and auth header, which come from the ProviderConfig.
  */
 export class OpenAICompatProvider implements Provider {
@@ -54,7 +54,7 @@ export class OpenAICompatProvider implements Provider {
       const res = await fetch(`${this.base()}/models`, { headers: this.headers() });
       return res.ok
         ? { ok: true, message: 'Connected' }
-        : { ok: false, message: `HTTP ${res.status}${res.status === 401 ? ' — check your API key' : ''}` };
+        : { ok: false, message: `HTTP ${res.status}${res.status === 401 ? ', check your API key' : ''}` };
     } catch (e) {
       return { ok: false, message: friendlyError(e, this.base()) };
     }

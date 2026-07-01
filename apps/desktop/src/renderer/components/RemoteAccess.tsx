@@ -53,7 +53,7 @@ export function RemoteAccess() {
         {status.enabled && <span className="chip !text-white" style={{ background: '#4ec98a' }}>on</span>}
       </div>
       <p className="mt-1 text-[12px] text-ink-faint">
-        Drive this machine's model from your phone via a relay. End-to-end encrypted — the relay only
+        Drive this machine's model from your phone via a relay. End-to-end encrypted, the relay only
         sees ciphertext.
       </p>
 

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import jsQR from 'jsqr';
 
 /**
- * Camera QR scanner using getUserMedia + jsQR (pure JS — no native plugin, works
+ * Camera QR scanner using getUserMedia + jsQR (pure JS, no native plugin, works
  * in the Capacitor webview and mobile browsers). Calls onResult with the decoded
  * text. The native app needs a camera usage description (see apps/mobile README).
  */

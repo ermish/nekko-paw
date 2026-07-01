@@ -5,8 +5,8 @@ import { createPrivateKey, sign as cryptoSign, createSign, type KeyObject } from
  * Relay-side push sender. The relay is the one always-on piece, so it holds the
  * push credentials (server secrets) and sends a **content-free** notification to
  * a paired phone when its desktop signals a finished run while the phone is
- * offline. The relay never sees the (E2E-encrypted) conversation — only the
- * "a run finished" signal — so a generic body keeps the zero-knowledge property.
+ * offline. The relay never sees the (E2E-encrypted) conversation, only the
+ * "a run finished" signal, so a generic body keeps the zero-knowledge property.
  *
  * APNs is implemented natively (HTTP/2 + ES256 JWT, no dependency). FCM is a
  * documented stub until a Google service account is configured.

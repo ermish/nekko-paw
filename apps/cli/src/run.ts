@@ -21,7 +21,7 @@ function parseFlags(argv: string[]): { _: string[]; flags: Record<string, string
   return { _, flags };
 }
 
-const HELP = `Open Paw CLI (opaw ${VERSION}) — drive your local agent from the terminal.
+const HELP = `Open Paw CLI (opaw ${VERSION}), drive your local agent from the terminal.
 
 Usage:
   opaw status [--json]              Show providers, model, workspaces, sessions
@@ -70,9 +70,9 @@ export async function runCli(argv: string[]): Promise<void> {
       }, null, 2));
       return;
     }
-    console.log(`Open Paw — ${flags.url || process.env.OPENPAW_URL || dataDir()}`);
+    console.log(`Open Paw, ${flags.url || process.env.OPENPAW_URL || dataDir()}`);
     console.log(`Providers: ${s.providers.map((p) => `${p.label} (${p.id})`).join(', ') || 'none'}`);
-    console.log(`Default model: ${s.defaultModelId ?? '—'}`);
+    console.log(`Default model: ${s.defaultModelId ?? '-'}`);
     console.log(`Workspaces: ${s.workspaces.map((w) => w.name).join(', ') || 'none'}`);
     console.log(`Sessions: ${sessions.length}`);
     console.log(`Remote relay: ${remote.enabled ? 'enabled' : 'off'}`);

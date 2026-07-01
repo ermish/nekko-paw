@@ -78,7 +78,7 @@ export function App() {
   }, []);
 
   // Native (mobile) only: notify when an agent run finishes while the app is
-  // backgrounded. Local notification — no push backend / APNs / FCM needed.
+  // backgrounded. Local notification, no push backend / APNs / FCM needed.
   useEffect(() => {
     const cap = (window as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor;
     if (!cap?.isNativePlatform?.()) return;

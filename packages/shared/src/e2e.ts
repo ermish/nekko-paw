@@ -1,6 +1,6 @@
 /**
  * End-to-end encryption for relayed traffic. The relay only ever forwards opaque
- * ciphertext — it can't read requests, responses, or model output. Both the
+ * ciphertext, it can't read requests, responses, or model output. Both the
  * local agent and the remote client derive the same AES-GCM key from the shared
  * pairing secret (+ room as salt) via PBKDF2. Uses WebCrypto, which is available
  * both in the browser and in Node 20+ (globalThis.crypto.subtle).

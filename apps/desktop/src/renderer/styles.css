@@ -212,7 +212,7 @@ h1 { letter-spacing: -0.02em; }
 .fade-in { animation: fade 0.25s ease; }
 @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
-/* Speech bubbles — assistant on the left, user on the right, each with a small
+/* Speech bubbles, assistant on the left, user on the right, each with a small
    tail so the conversation reads like a chat thread that flows from the box. */
 .bubble {
   position: relative;
@@ -253,7 +253,7 @@ h1 { letter-spacing: -0.02em; }
   clip-path: polygon(0 100%, 100% 100%, 0 0);
 }
 
-/* Thinking box — Claude-Code-style: quiet, left-accent rule, monospace-ish. */
+/* Thinking box, Claude-Code-style: quiet, left-accent rule, monospace-ish. */
 .thinking-box {
   border: 1px solid var(--line);
   border-left: 2px solid var(--accent);

@@ -1,4 +1,4 @@
-/** Memory store types — markdown-backed notes, global or per-workspace. */
+/** Memory store types, markdown-backed notes, global or per-workspace. */
 export type MemoryScope = 'global' | 'workspace';
 export interface MemoryEntry {
     id: string;

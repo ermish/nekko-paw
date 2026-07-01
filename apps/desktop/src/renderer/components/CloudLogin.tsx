@@ -9,7 +9,7 @@ const LS_TOKEN = 'nekko_token';
  * self-hosted server (no `/api/auth/config`), so only the hosted edition gates.
  */
 export async function cloudAuthRequired(): Promise<boolean> {
-  if ((window as any).nekko) return false; // Electron preload — never cloud
+  if ((window as any).nekko) return false; // Electron preload, never cloud
   try {
     const cfg = await fetch('/api/auth/config');
     if (!cfg.ok) return false;
@@ -35,7 +35,7 @@ export async function cloudAuthRequired(): Promise<boolean> {
 /**
  * Full-screen sign-in / sign-up for Nekko Cloud. On success it stores the
  * account session token (which the existing web-client sends as a Bearer) and
- * calls `onAuthed` so the host app mounts. The app UI itself is untouched —
+ * calls `onAuthed` so the host app mounts. The app UI itself is untouched -
  * cloud auth is a thin gate in front of the same renderer every edition uses.
  */
 export function CloudLogin({ onAuthed }: { onAuthed: () => void }) {
@@ -70,7 +70,7 @@ export function CloudLogin({ onAuthed }: { onAuthed: () => void }) {
       <div className="mb-5 grid h-16 w-16 place-items-center rounded-2xl text-3xl" style={{ background: 'var(--accent-soft)' }}>🐾</div>
       <h1 className="text-xl font-semibold">{mode === 'login' ? 'Welcome back' : 'Create your account'}</h1>
       <p className="mt-2 max-w-sm text-center text-[13px] text-ink-faint">
-        Nekko Cloud — your chats, memory, and workspaces, hosted. The desktop and self-hosted editions never ask you to sign in.
+        Nekko Cloud, your chats, memory, and workspaces, hosted. The desktop and self-hosted editions never ask you to sign in.
       </p>
       <form className="mt-5 flex w-full max-w-sm flex-col gap-3" onSubmit={submit}>
         <input

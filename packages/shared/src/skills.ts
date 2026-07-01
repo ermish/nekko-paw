@@ -1,11 +1,11 @@
 /**
- * Skills — runnable, named capabilities surfaced in the composer's `/` menu and
+ * Skills, runnable, named capabilities surfaced in the composer's `/` menu and
  * the dedicated Skills tab. These mirror the standard skills any agent (Claude
  * Code and others) can run; selecting one drops its scaffold into the composer
  * ready to send. `goal` is special (see `kind: 'goal'`): it starts a
  * long-running background agent that works until a condition is met.
  *
- * Every skill also carries a small **workflow** — a node graph describing the
+ * Every skill also carries a small **workflow**, a node graph describing the
  * steps it runs through (trigger → context → agent → tools → output, with loops
  * and branches). The Skills tab renders this like an n8n / Make canvas so the
  * user can see what a skill actually does before running it. `layoutWorkflow`
@@ -55,7 +55,7 @@ export interface SkillEdge {
   from: string;
   to: string;
   label?: string;
-  /** A return/loop edge (drawn dashed, routed around) — ignored for layering. */
+  /** A return/loop edge (drawn dashed, routed around), ignored for layering. */
   back?: boolean;
 }
 

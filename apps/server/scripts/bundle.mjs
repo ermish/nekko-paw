@@ -43,7 +43,7 @@ const version = JSON.parse(readFileSync(join(serverDir, 'package.json'), 'utf8')
 const pkg = {
   name: 'open-paw',
   version,
-  description: 'Local-first AI coding & cowork — the self-hosted web edition. Run with `npx open-paw`.',
+  description: 'Local-first AI coding & cowork, the self-hosted web edition. Run with `npx open-paw`.',
   license: 'MIT',
   type: 'module',
   bin: { 'open-paw': 'index.mjs' },

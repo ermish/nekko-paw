@@ -1,8 +1,8 @@
-# Open Paw — Mobile (iOS & Android)
+# Open Paw, Mobile (iOS & Android)
 
 Native phone apps built with **Capacitor**. They run the same React UI as the
 desktop/web editions and connect to the model on your computer over the
-**end-to-end encrypted relay** — your phone never holds your model or keys; it
+**end-to-end encrypted relay**: your phone never holds your model or keys; it
 drives the agent running on your machine.
 
 > This is the "drive your local model from your phone" edition. The UI is the
@@ -19,17 +19,17 @@ drives the agent running on your machine.
 ## Notifications
 
 When a task you started finishes while the app is backgrounded, you get a **local
-notification** ("Nekko finished") — no push server, no APNs/FCM setup needed
+notification** ("Nekko finished"), no push server, no APNs/FCM setup needed
 (uses `@capacitor/local-notifications`). True remote/background push (when the app
-is fully closed) would need APNs + FCM + a sender backend — not wired yet.
+is fully closed) would need APNs + FCM + a sender backend, not wired yet.
 
 ## Permissions (native projects)
 
 After `cap add`, add these to the generated native projects:
 
-- **iOS** — in `ios/App/App/Info.plist`:
+- **iOS**: in `ios/App/App/Info.plist`:
   - `NSCameraUsageDescription` = "Scan the pairing QR code from your computer." (QR scan)
-- **Android** — `cap add android` already declares camera/notification permissions
+- **Android**: `cap add android` already declares camera/notification permissions
   for the plugins; the QR scanner requests camera at runtime.
 
 ## Build & run

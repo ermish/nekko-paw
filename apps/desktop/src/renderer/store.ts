@@ -18,7 +18,7 @@ export interface Toast {
   message: string;
 }
 
-/** A single workbench tab — a chat, terminal, file, browser, or diff view. */
+/** A single workbench tab, a chat, terminal, file, browser, or diff view. */
 export interface WbPane {
   id: string;
   kind: 'chat' | 'terminal' | 'file' | 'browser' | 'diff';
@@ -86,7 +86,7 @@ interface UiState {
   openTerminalPane: (terminalId: string) => void;
   openFilePane: (path: string) => void;
   openBrowserPane: (url?: string) => void;
-  /** Route text to a chat's composer — Add to prompt (run=false) or Run now (run=true). */
+  /** Route text to a chat's composer, Add to prompt (run=false) or Run now (run=true). */
   sendToChat: (text: string, run: boolean) => Promise<void>;
   /** Open the diff/approve review for a session's changed files. */
   openDiffPane: (sessionId: string) => void;
@@ -186,7 +186,7 @@ export const useStore = create<UiState>((set, get) => ({
     const active = get().activeProviderId ?? providers[0]?.id ?? null;
     if (active) {
       set({ activeProviderId: active });
-      // Always populate models for the active provider on startup — guards a
+      // Always populate models for the active provider on startup, guards a
       // race where a saved default provider is already active and would
       // otherwise never have its model list fetched.
       if (get().models.length === 0) await get().selectProvider(active);

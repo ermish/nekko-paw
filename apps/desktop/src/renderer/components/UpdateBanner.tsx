@@ -23,7 +23,7 @@ export function UpdateBanner() {
     let off: (() => void) | undefined;
     window.nekko.getAppInfo().then((ai) => {
       setInfo(ai);
-      // "Updated to version X" — current version differs from the last one we saw.
+      // "Updated to version X", current version differs from the last one we saw.
       const last = localStorage.getItem(LS_LAST_VERSION);
       if (last && last !== ai.version) setJustUpdated(ai.version);
       localStorage.setItem(LS_LAST_VERSION, ai.version);
@@ -43,7 +43,7 @@ export function UpdateBanner() {
   const notesUrl = update?.notesUrl ?? 'https://github.com/nekko-labs/open-paw/releases/latest';
   const openNotes = () => window.nekko.openPath(notesUrl);
 
-  // First-run prompt (desktop only — the web edition just refreshes).
+  // First-run prompt (desktop only, the web edition just refreshes).
   const showFirstRun =
     isDesktop && settings != null && !settings.autoUpdatePrompted && !dismissedFirstRun;
 
@@ -111,7 +111,7 @@ export function UpdateBanner() {
         <div className="card pointer-events-auto fade-in p-3 shadow-lg">
           <div className="flex items-center justify-between">
             <div className="text-[13px] font-semibold">
-              {isDesktop ? `Update available — v${update!.version ?? ''}` : 'A new version is available'}
+              {isDesktop ? `Update available, v${update!.version ?? ''}` : 'A new version is available'}
             </div>
             <button className="text-ink-faint hover:text-ink" onClick={() => setUpdate({ ...update!, state: 'idle' })}>✕</button>
           </div>

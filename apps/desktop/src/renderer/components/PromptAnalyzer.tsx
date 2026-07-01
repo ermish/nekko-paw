@@ -4,7 +4,7 @@ import { analyzePrompt, GRADE_COLOR, SEVERITY_COLOR, type Finding, type Severity
 /**
  * Live prompt analyzer in the composer. Zero-latency, client-side: shows a health
  * grade, which parts of a good prompt are present/missing, inline-underlined weak
- * spots, concrete suggestions, and a model recommendation. A marketing edge —
+ * spots, concrete suggestions, and a model recommendation. A marketing edge -
  * "Open Paw helps you write the prompt," not just answer it.
  */
 const SEV_ORDER: Record<Severity, number> = { critical: 0, warn: 1, info: 2 };
@@ -60,7 +60,7 @@ export function PromptAnalyzer({ text }: { text: string }) {
               ))}
             </ul>
           ) : (
-            <p className="text-ink-faint">Clear task and structure — nothing to flag.</p>
+            <p className="text-ink-faint">Clear task and structure, nothing to flag.</p>
           )}
 
           {ranged && (

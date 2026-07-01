@@ -7,7 +7,7 @@ export default defineConfig({
     build: {
       rollupOptions: {
         // electron-updater is CJS with node-only internals, and @lydell/node-pty
-        // ships a native .node binary — require both at runtime from node_modules
+        // ships a native .node binary, require both at runtime from node_modules
         // (electron-builder packs production deps + auto-unpacks .node from asar)
         // instead of bundling them.
         external: ['electron-updater', '@lydell/node-pty'],

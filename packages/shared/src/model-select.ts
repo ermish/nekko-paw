@@ -1,5 +1,5 @@
 /**
- * Model auto-mode — a pure heuristic that picks the best available model for a
+ * Model auto-mode, a pure heuristic that picks the best available model for a
  * given prompt, with no extra model calls. "Best" means: match a strong model
  * to complex/coding work and a cheap/fast model to quick questions, among the
  * models the chat's provider actually exposes. Used by the ChatPane when the
@@ -24,7 +24,7 @@ export function isComplexPrompt(prompt: string): boolean {
 
 /**
  * Capability tier for a model, inferred from its id/name (higher = stronger).
- * Deliberately coarse — it only needs to rank what a provider offers.
+ * Deliberately coarse, it only needs to rank what a provider offers.
  */
 export function modelTier(model: ModelInfo): number {
   const id = `${model.id} ${model.name}`.toLowerCase();

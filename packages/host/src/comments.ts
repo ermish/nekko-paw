@@ -9,7 +9,7 @@ import { dataDir } from './store.js';
  * agent to pick up ("Add to prompt" / "Run now"). Persisted to a single JSON
  * file keyed by absolute file path so they survive pane reopen and restart, and
  * show as gutter markers until resolved. The two agent actions are renderer-side
- * (they route the comment to a chat) — this store is just durable annotation.
+ * (they route the comment to a chat), this store is just durable annotation.
  */
 
 type Store = Record<string, LineComment[]>;

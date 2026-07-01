@@ -4,7 +4,7 @@ import { useStore } from '../store.js';
 import { PlusIcon, CloseIcon, ExternalIcon, TrashIcon } from '../icons.js';
 
 /**
- * Design board — the app's UI pages laid out like a Figma board. Each card is a
+ * Design board, the app's UI pages laid out like a Figma board. Each card is a
  * live, scaled-down "snapshot" (a read-only preview) of a page; click one to pin
  * persistent notes or leave a comment the agent picks up (Add to prompt / Run
  * now). As an agent edits the UI the previews reload so you watch the design
@@ -75,7 +75,7 @@ export function DesignBoardView() {
       <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
         <div className="grid h-14 w-14 place-items-center rounded-2xl text-3xl" style={{ background: 'var(--accent-soft)' }}>🎨</div>
         <h2 className="text-lg font-semibold">Design board</h2>
-        <p className="max-w-sm text-[13px] text-ink-faint">Add a project in <b>Projects</b> first — the design board shows your app's pages as a Figma-style board of live snapshots.</p>
+        <p className="max-w-sm text-[13px] text-ink-faint">Add a project in <b>Projects</b> first, the design board shows your app's pages as a Figma-style board of live snapshots.</p>
       </div>
     );
   }
@@ -90,7 +90,7 @@ export function DesignBoardView() {
           </select>
         )}
         {updating && (
-          <button className="chip flex items-center gap-1.5 text-[11px] text-accent" onClick={goToAgent} title="An agent is updating your app — open its chat">
+          <button className="chip flex items-center gap-1.5 text-[11px] text-accent" onClick={goToAgent} title="An agent is updating your app, open its chat">
             <span className="h-2 w-2 animate-pulse rounded-full bg-accent" /> Updating… open agent
           </button>
         )}
@@ -138,7 +138,7 @@ export function DesignBoardView() {
             onOpenBrowser={() => { useStore.getState().openBrowserPane(selectedPage.url); useStore.getState().setView('chat'); }}
             onAddNote={async (text) => { if (wsId) setBoard(await window.nekko.addDesignNote(wsId, selectedPage.id, text)); }}
             onResolveNote={async (id) => { if (wsId) setBoard(await window.nekko.resolveDesignNote(wsId, selectedPage.id, id)); }}
-            onComment={(text, run) => sendToChat(`Re design page "${selectedPage.label}" (${selectedPage.url}) — ${text}`, run)}
+            onComment={(text, run) => sendToChat(`Re design page "${selectedPage.label}" (${selectedPage.url}), ${text}`, run)}
           />
         )}
       </div>
@@ -180,7 +180,7 @@ function PageCard({
             className="absolute right-1.5 top-1.5 flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium text-white shadow"
             style={{ background: 'var(--accent)' }}
             onClick={(e) => { e.stopPropagation(); onUpdatingClick(); }}
-            title="An agent is updating your app — open its chat"
+            title="An agent is updating your app, open its chat"
           >
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" /> updating
           </button>
@@ -245,9 +245,9 @@ function PageSheet({
       </div>
 
       <div className="px-3 py-3">
-        {/* Notes — persistent */}
+        {/* Notes, persistent */}
         <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-ink-faint">Notes</div>
-        {page.notes.length === 0 && <p className="mb-2 text-[12px] text-ink-faint">No notes yet — pin design intent that sticks with this page.</p>}
+        {page.notes.length === 0 && <p className="mb-2 text-[12px] text-ink-faint">No notes yet, pin design intent that sticks with this page.</p>}
         {page.notes.map((n) => (
           <div key={n.id} className="mb-1.5 flex items-start gap-2 rounded-lg border border-line p-2">
             <p className="min-w-0 flex-1 whitespace-pre-wrap text-[12.5px]">{n.text}</p>
@@ -261,7 +261,7 @@ function PageSheet({
           <button className="btn btn-outline px-2 py-1 text-[12px]" disabled={!note.trim()} onClick={() => { onAddNote(note); setNote(''); noteRef.current?.focus(); }}>Pin</button>
         </div>
 
-        {/* Comment — routes to the agent */}
+        {/* Comment, routes to the agent */}
         <div className="mb-1.5 mt-4 text-[11px] font-semibold uppercase tracking-wide text-ink-faint">Comment for the agent</div>
         <textarea className="input min-h-[60px] resize-none text-[12.5px]" rows={3} placeholder="Describe a change to this page…"
           value={comment} onChange={(e) => setComment(e.target.value)} />

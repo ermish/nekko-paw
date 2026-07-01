@@ -6,7 +6,7 @@ import { useStore } from '../store.js';
 
 /**
  * Spec-driven development panel (Kiro-inspired). Pick a methodology, then build
- * or update each artifact in order — the spec, the plan, then a task checklist.
+ * or update each artifact in order, the spec, the plan, then a task checklist.
  * Later artifacts are chained from the earlier ones server-side. The tasks doc
  * renders as an interactive checklist whose toggles write back to the file.
  */

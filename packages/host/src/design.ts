@@ -8,7 +8,7 @@ import { dataDir } from './store.js';
  * Design board persistence: a Figma-style board of an app's UI pages (a label +
  * a URL the page renders at) plus persistent notes pinned to each page. Stored
  * in one JSON file keyed by workspaceId. The page "snapshots" are live scaled
- * previews rendered in the UI — only the page list + notes are persisted here.
+ * previews rendered in the UI, only the page list + notes are persisted here.
  */
 
 type Store = Record<string, DesignPage[]>;

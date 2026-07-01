@@ -35,9 +35,9 @@ export interface ContextPrefs {
 
 /**
  * How a chat handles tool execution:
- *  - `ask`        — confirm every file write / command before it runs.
- *  - `guardrails` — run freely except where the guardrail rules say ask/deny.
- *  - `yolo`       — run everything without confirming (deny rules still block).
+ *  - `ask`, confirm every file write / command before it runs.
+ *  - `guardrails`, run freely except where the guardrail rules say ask/deny.
+ *  - `yolo`, run everything without confirming (deny rules still block).
  */
 export type ChatMode = 'ask' | 'guardrails' | 'yolo';
 

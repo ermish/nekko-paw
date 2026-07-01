@@ -23,7 +23,7 @@ export function setDataDir(dir: string): void {
 export function dataDir(): string {
   const scoped = scope.getStore();
   if (scoped) return scoped;
-  if (!_dir) throw new Error('Host not initialized — call createHost({ dataDir }) first.');
+  if (!_dir) throw new Error('Host not initialized, call createHost({ dataDir }) first.');
   return _dir;
 }
 

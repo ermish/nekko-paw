@@ -3,7 +3,7 @@ import type { ToolSpec } from '@open-paw/core';
 import type { McpServerConfig, McpServerStatus, ToolResult, ToolCall } from '@open-paw/shared';
 
 /**
- * Minimal MCP stdio client — hand-rolled JSON-RPC 2.0 over newline-delimited
+ * Minimal MCP stdio client, hand-rolled JSON-RPC 2.0 over newline-delimited
  * stdio (the MCP stdio transport), so we add no dependency. One McpServer wraps
  * one spawned server process: handshake, list tools, call tools.
  */
@@ -23,7 +23,7 @@ class McpServer {
       shell: process.platform === 'win32',
     }) as ChildProcessWithoutNullStreams;
     this.proc.stdout.on('data', (d) => this.onData(d));
-    this.proc.stderr.on('data', () => {/* server logs — ignore */});
+    this.proc.stderr.on('data', () => {/* server logs, ignore */});
     this.proc.on('error', (e) => { this.error = e.message; this.connected = false; });
     this.proc.on('exit', () => { this.connected = false; });
 

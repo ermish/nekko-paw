@@ -7,7 +7,7 @@ import type { FastifyInstance } from 'fastify';
 import { createCloudServer } from './server.js';
 import { createBilling } from './billing.js';
 
-/** Drives the real cloud server over Fastify `inject` — no network, no model. */
+/** Drives the real cloud server over Fastify `inject`, no network, no model. */
 describe('cloud server (HTTP)', () => {
   let app: FastifyInstance;
 

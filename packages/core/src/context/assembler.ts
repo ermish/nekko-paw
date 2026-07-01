@@ -33,7 +33,7 @@ function preview(text: string, n = 160): string {
 
 /**
  * Build a ContextBundle with one provenance record per included item. This is
- * the single source of truth behind the Context Inspector — nothing enters the
+ * the single source of truth behind the Context Inspector, nothing enters the
  * prompt that isn't represented here.
  */
 export function assembleContext(input: AssembleInput): ContextBundle {

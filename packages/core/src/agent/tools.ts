@@ -75,7 +75,7 @@ export const BUILTIN_TOOLS: ToolSpec[] = [
   {
     name: 'bash',
     description:
-      'Run a shell command in the workspace. Subject to guardrails — risky commands require user approval.',
+      'Run a shell command in the workspace. Subject to guardrails, risky commands require user approval.',
     parameters: {
       type: 'object',
       properties: {

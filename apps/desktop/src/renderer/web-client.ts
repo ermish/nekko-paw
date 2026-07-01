@@ -85,7 +85,7 @@ function makeWebClient(): NekkoApi {
             /* tampered / wrong key */
           }
         }
-        // non-enc frames are relay control (agent-online/offline) — ignored
+        // non-enc frames are relay control (agent-online/offline), ignored
       };
       relay.onclose = () => setTimeout(connect, 1000);
     };
@@ -212,7 +212,7 @@ function makeWebClient(): NekkoApi {
     wipeAllData: () => call(IpcChannels.dataWipe),
     listTools: () => call(IpcChannels.toolsList),
 
-    // No native picker in the browser — ask for server-side path(s).
+    // No native picker in the browser, ask for server-side path(s).
     openFilesDialog: async () => {
       const p = window.prompt('File path(s) on the server to attach (comma-separated):');
       return p ? p.split(',').map((s) => s.trim()).filter(Boolean) : [];
@@ -226,7 +226,7 @@ function makeWebClient(): NekkoApi {
     deleteMemory: (id) => call(IpcChannels.memoryDelete, id),
 
     listWorkspaces: () => call(IpcChannels.workspaceList),
-    // No native folder picker in the browser — ask for a server-side path.
+    // No native folder picker in the browser, ask for a server-side path.
     addWorkspace: async () => {
       const p = window.prompt('Folder path on the server to add as a workspace:');
       return p ? call(IpcChannels.workspaceAddByPath, p) : call(IpcChannels.workspaceList);

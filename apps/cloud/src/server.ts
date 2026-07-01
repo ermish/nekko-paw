@@ -23,7 +23,7 @@ export interface CloudServerOptions {
  * edition, but per authenticated account: each account gets an isolated data
  * dir (its own settings/sessions/memory) via `withDataDir`, and feature limits
  * are enforced server-side from the account's plan. The OSS app never does any
- * of this — it just runs locally.
+ * of this, it just runs locally.
  */
 export function createCloudServer(opts: CloudServerOptions): { app: FastifyInstance; store: CloudStore } {
   const store = new CloudStore(opts.dataRoot);
@@ -168,7 +168,7 @@ export function createCloudServer(opts: CloudServerOptions): { app: FastifyInsta
     });
   });
 
-  // Stripe webhook — encapsulated so its RAW-body parser (needed for signature
+  // Stripe webhook, encapsulated so its RAW-body parser (needed for signature
   // verification) doesn't touch the JSON `/api/:channel` routes above.
   app.register(async (hook) => {
     hook.addContentTypeParser('application/json', { parseAs: 'buffer' }, (_req, body, done) => done(null, body));
