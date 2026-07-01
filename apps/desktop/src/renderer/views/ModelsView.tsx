@@ -63,14 +63,14 @@ export function ModelsView() {
         <ProviderSection
           title="Local"
           accent="#4ec98a"
-          subtitle="On-device model servers — private, free, fast."
+          subtitle="On-device model servers, private, free, fast."
           providers={local}
           onChanged={refreshProviders}
         />
         <ProviderSection
           title="Cloud"
           accent="#5b9dd9"
-          subtitle="Hosted APIs — Anthropic, OpenAI, OpenRouter, or any compatible endpoint."
+          subtitle="Hosted APIs, Anthropic, OpenAI, OpenRouter, or any compatible endpoint."
           providers={cloud}
           onChanged={refreshProviders}
         />

@@ -2,7 +2,7 @@
 
 These files mirror the [GitHub Wiki](https://github.com/nekko-labs/open-paw/wiki).
 
-GitHub does not expose an API to create a wiki's first page — it must be created
+GitHub does not expose an API to create a wiki's first page, it must be created
 once in the web UI (Wiki tab → "Create the first page"). After that one-time step,
 the wiki's git repo (`open-paw.wiki.git`) exists and these pages can be pushed:
 

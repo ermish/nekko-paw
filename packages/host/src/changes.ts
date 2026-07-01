@@ -6,7 +6,7 @@ import type { FileChange } from '@open-paw/shared';
  * approve/revert them (Devin-style). The first time a path is written/edited in
  * a session we snapshot its original content; the diff is always current-on-disk
  * vs that snapshot. Writes still happen immediately (no disruption to the agent
- * loop) — "revert" simply writes content back. In-memory only.
+ * loop), "revert" simply writes content back. In-memory only.
  */
 
 interface Rec { path: string; original: string }
@@ -42,7 +42,7 @@ export function listChanges(sessionId: string): FileChange[] {
   return out.sort((a, b) => a.path.localeCompare(b.path));
 }
 
-/** Accept (keep) a file's changes — stop tracking it. */
+/** Accept (keep) a file's changes, stop tracking it. */
 export function acceptChange(sessionId: string, path: string): void {
   bySession.get(sessionId)?.delete(path);
   notify?.(sessionId);

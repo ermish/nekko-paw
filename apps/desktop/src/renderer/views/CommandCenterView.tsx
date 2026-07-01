@@ -67,7 +67,7 @@ export function CommandCenterView() {
     return m;
   }, [sessions]);
 
-  // Chats the user started directly — excludes sub-agents and task-driven chats
+  // Chats the user started directly, excludes sub-agents and task-driven chats
   // (those live in the swarm tree and the Tasks board respectively).
   const topLevel = useMemo(() => sessions.filter((s) => !s.parentSessionId && !s.taskId), [sessions]);
   const recentSession = topLevel[0];
@@ -132,7 +132,7 @@ export function CommandCenterView() {
           ))}
         </div>
 
-        {/* THE BOARD — prominent live agent work */}
+        {/* THE BOARD, prominent live agent work */}
         <div className="mt-7 flex items-center gap-2">
           <h2 className="text-[15px] font-semibold">Active agent work</h2>
           {running.size > 0 && (
@@ -245,7 +245,7 @@ function countDescendants(id: string, childrenOf: Map<string, Session[]>): numbe
   return kids.reduce((n, k) => n + 1 + countDescendants(k.id, childrenOf), 0);
 }
 
-/** Recursive sub-agent tree — the swarm under one agent, nested by parentage. */
+/** Recursive sub-agent tree, the swarm under one agent, nested by parentage. */
 function SubAgentTree({
   parentId, childrenOf, running, onOpen, depth = 0,
 }: {
@@ -445,7 +445,7 @@ function WorkersDashboard({ providers, usage }: { providers: ProviderConfig[]; u
           </div>
         ))}
         {providers.length === 0 && mcp.length === 0 && (
-          <div className="card p-4 text-[12px] text-ink-faint">No model providers yet — add one in Models.</div>
+          <div className="card p-4 text-[12px] text-ink-faint">No model providers yet, add one in Models.</div>
         )}
       </div>
     </section>
@@ -575,7 +575,7 @@ function UsagePanel({ usage }: { usage: UsageSummary | null }) {
           ))}
         </div>
       ) : (
-        <ChartEmpty message="No usage recorded yet — start a chat to see token analytics here." />
+        <ChartEmpty message="No usage recorded yet, start a chat to see token analytics here." />
       )}
       {Object.keys(usage.byModel).length > 0 && (
         <div className="mt-4 space-y-1">
@@ -699,7 +699,7 @@ function CostPanel({ usage, sessions, providers }: { usage: UsageSummary | null;
         </>
       )}
 
-      {/* Pricing reference — token/$ estimates */}
+      {/* Pricing reference, token/$ estimates */}
       <details className="card mt-4 p-4">
         <summary className="cursor-pointer text-[12px] font-medium">Token pricing reference (USD per 1M tokens)</summary>
         <div className="mt-2 grid grid-cols-2 gap-x-6 gap-y-1 md:grid-cols-3">
@@ -710,7 +710,7 @@ function CostPanel({ usage, sessions, providers }: { usage: UsageSummary | null;
             </div>
           ))}
         </div>
-        <p className="mt-2 text-[11px] text-ink-faint">Published list prices, matched by model id. Estimates only — your billed amount may differ. Local models (Ollama / LM Studio / vLLM) cost $0.</p>
+        <p className="mt-2 text-[11px] text-ink-faint">Published list prices, matched by model id. Estimates only, your billed amount may differ. Local models (Ollama / LM Studio / vLLM) cost $0.</p>
       </details>
     </section>
   );

@@ -22,7 +22,7 @@ const isLocal = HOST === '127.0.0.1' || HOST === 'localhost' || HOST === '::1';
 const DATA_DIR = process.env.OPENPAW_DATA_DIR ?? join(homedir(), '.open-paw');
 // Auth is required iff a token is configured. (Containers must bind 0.0.0.0 but
 // are typically published only to the host's localhost, so we don't force a
-// token just because of the bind address — set OPENPAW_TOKEN when truly exposed.)
+// token just because of the bind address, set OPENPAW_TOKEN when truly exposed.)
 const TOKEN = process.env.OPENPAW_TOKEN ?? '';
 const requireAuth = TOKEN !== '';
 
@@ -135,8 +135,8 @@ async function main() {
   console.log(`   data dir: ${DATA_DIR}`);
   if (requireAuth) console.log(`   auth: token required (append ?token=… to the URL)`);
   else if (!isLocal)
-    console.log(`   ⚠ bound to ${HOST} without a token — set OPENPAW_TOKEN to require auth before exposing publicly.`);
-  console.log(`   (offline-first — only reaches the model servers + connectors you configure)\n`);
+    console.log(`   ⚠ bound to ${HOST} without a token, set OPENPAW_TOKEN to require auth before exposing publicly.`);
+  console.log(`   (offline-first, only reaches the model servers + connectors you configure)\n`);
 }
 
 main().catch((e) => {

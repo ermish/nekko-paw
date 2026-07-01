@@ -1,5 +1,5 @@
 /**
- * Client-side prompt analysis — instant, offline, no API cost. Modeled on the
+ * Client-side prompt analysis, instant, offline, no API cost. Modeled on the
  * PromptLint diagnostics approach: detect the *parts* of a prompt, run lint
  * rules over the text, produce an A–F health grade, and suggest a model tier.
  * Pure functions; the composer renders the result.
@@ -88,7 +88,7 @@ export function analyzePrompt(raw: string): PromptAnalysis {
   const has = (id: string) => parts.find((p) => p.id === id)?.present ?? false;
 
   // --- Structure / completeness ---
-  if (!has('task')) findings.push({ ruleId: 'no-task', severity: 'warn', message: 'No clear task — start with a command verb (Write, Analyze, Fix…).' });
+  if (!has('task')) findings.push({ ruleId: 'no-task', severity: 'warn', message: 'No clear task, start with a command verb (Write, Analyze, Fix…).' });
   if (!has('format') && words > 12) findings.push({ ruleId: 'no-format', severity: 'warn', message: 'No output format specified (e.g. JSON, markdown, a list, a length).' });
   if (!has('role') && words > 20) findings.push({ ruleId: 'no-role', severity: 'info', message: 'Consider adding a persona ("You are a…") to steer tone and expertise.' });
   if (/\b(classify|categori[sz]e|extract|label|tag)\b/i.test(text) && !has('examples')) {
@@ -96,28 +96,28 @@ export function analyzePrompt(raw: string): PromptAnalysis {
   }
 
   // --- Vagueness & weak language (ranged) ---
-  eachMatch(text, wordList(VAGUE), (m) => ({ ruleId: 'vague', severity: 'warn', message: `"${m[0]}" is vague — say specifically what you mean.`, start: m.index, end: m.index + m[0].length }), findings);
-  eachMatch(text, wordList(HEDGES), (m) => ({ ruleId: 'hedge', severity: 'info', message: `"${m[0]}" is tentative — use a direct instruction.`, start: m.index, end: m.index + m[0].length }), findings);
-  eachMatch(text, wordList(FILLER), (m) => ({ ruleId: 'filler', severity: 'info', message: `"${m[0]}" is filler — it wastes tokens.`, start: m.index, end: m.index + m[0].length }), findings);
+  eachMatch(text, wordList(VAGUE), (m) => ({ ruleId: 'vague', severity: 'warn', message: `"${m[0]}" is vague, say specifically what you mean.`, start: m.index, end: m.index + m[0].length }), findings);
+  eachMatch(text, wordList(HEDGES), (m) => ({ ruleId: 'hedge', severity: 'info', message: `"${m[0]}" is tentative, use a direct instruction.`, start: m.index, end: m.index + m[0].length }), findings);
+  eachMatch(text, wordList(FILLER), (m) => ({ ruleId: 'filler', severity: 'info', message: `"${m[0]}" is filler, it wastes tokens.`, start: m.index, end: m.index + m[0].length }), findings);
 
   // --- Length ---
   if (tokens > 2000) findings.push({ ruleId: 'too-long', severity: 'warn', message: `Long prompt (~${tokens} tokens). Trim anything the model doesn't need.` });
   if (words > 0 && words < 8 && !has('format') && !has('constraints')) {
-    findings.push({ ruleId: 'too-short', severity: 'info', message: 'Very short — likely underspecified. Add the task, context, and desired output.' });
+    findings.push({ ruleId: 'too-short', severity: 'info', message: 'Very short, likely underspecified. Add the task, context, and desired output.' });
   }
   // Long sentences (ranged).
-  eachMatch(text, /[^.!?\n]{160,}?[.!?]/g, (m) => ({ ruleId: 'long-sentence', severity: 'info', message: 'Long sentence — splitting it improves clarity.', start: m.index, end: m.index + m[0].length }), findings);
+  eachMatch(text, /[^.!?\n]{160,}?[.!?]/g, (m) => ({ ruleId: 'long-sentence', severity: 'info', message: 'Long sentence, splitting it improves clarity.', start: m.index, end: m.index + m[0].length }), findings);
 
   // --- Conflicts ---
   if (/\bconcise|brief|short\b/i.test(text) && /\b(detailed|comprehensive|thorough|in-depth|exhaustive)\b/i.test(text)) {
-    findings.push({ ruleId: 'conflict-length', severity: 'warn', message: 'Conflicting length cues ("concise" vs "detailed") — pick one.' });
+    findings.push({ ruleId: 'conflict-length', severity: 'warn', message: 'Conflicting length cues ("concise" vs "detailed"), pick one.' });
   }
 
   // --- Safety (ranged) ---
   for (const [re, label] of SECRET_RES) {
-    eachMatch(text, re, (m) => ({ ruleId: 'secret', severity: 'critical', message: `Possible ${label} in the prompt — replace it with a placeholder.`, start: m.index, end: m.index + m[0].length }), findings);
+    eachMatch(text, re, (m) => ({ ruleId: 'secret', severity: 'critical', message: `Possible ${label} in the prompt, replace it with a placeholder.`, start: m.index, end: m.index + m[0].length }), findings);
   }
-  eachMatch(text, /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g, (m) => ({ ruleId: 'pii-email', severity: 'info', message: 'Email address detected — consider a placeholder for privacy.', start: m.index, end: m.index + m[0].length }), findings);
+  eachMatch(text, /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g, (m) => ({ ruleId: 'pii-email', severity: 'info', message: 'Email address detected, consider a placeholder for privacy.', start: m.index, end: m.index + m[0].length }), findings);
 
   // --- Score & grade ---
   const penalty = findings.reduce((s, f) => s + (f.severity === 'critical' ? 30 : f.severity === 'warn' ? 9 : 3), 0);
@@ -130,11 +130,11 @@ export function analyzePrompt(raw: string): PromptAnalysis {
   const codeHeavy = /```/.test(text);
   let model: ModelHint;
   if (tokens > 800 || reasoningHeavy || constraintCount >= 3 || (codeHeavy && tokens > 300)) {
-    model = { tier: 'frontier', reason: 'Multi-step reasoning or lots of context — a frontier model will follow it most reliably.' };
+    model = { tier: 'frontier', reason: 'Multi-step reasoning or lots of context, a frontier model will follow it most reliably.' };
   } else if (words > 0 && tokens < 120 && constraintCount === 0 && !codeHeavy) {
-    model = { tier: 'fast', reason: 'Short and single-shot — a fast, cheap model is plenty.' };
+    model = { tier: 'fast', reason: 'Short and single-shot, a fast, cheap model is plenty.' };
   } else {
-    model = { tier: 'balanced', reason: 'Moderate complexity — a balanced mid-tier model fits well.' };
+    model = { tier: 'balanced', reason: 'Moderate complexity, a balanced mid-tier model fits well.' };
   }
 
   return { grade, score, parts, findings, tokens, model };

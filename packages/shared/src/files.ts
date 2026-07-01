@@ -18,7 +18,7 @@ export interface FileContent {
   binary: boolean;
 }
 
-/** A file the agent changed this session — original vs current, for diff/approve. */
+/** A file the agent changed this session, original vs current, for diff/approve. */
 export interface FileChange {
   path: string;
   /** Content before the agent's first edit this session ('' if newly created). */

@@ -1,4 +1,4 @@
-# Open Paw — Walkthrough
+# Open Paw, Walkthrough
 
 A guided tour of Open Paw, from install to your first agentic edit. Screenshots
 are from the running app.
@@ -42,14 +42,14 @@ sessions, memory, and a usage log. No account, no telemetry.
 
 ## 2. Connect a model
 
-Open the **Models** tab. This is where Open Paw differs from most tools — local
+Open the **Models** tab. This is where Open Paw differs from most tools, local
 model servers are first-class, not an afterthought.
 
 ![Models tab](screenshots/models.png)
 
 - **Auto-discover local** probes `localhost:11434` (Ollama), `:1234` (LM Studio),
   and `:8000` (vLLM). Anything running is added with one click.
-- **Add provider** lets you configure a server manually, or add a cloud provider —
+- **Add provider** lets you configure a server manually, or add a cloud provider -
   Anthropic, OpenAI, OpenRouter, or any OpenAI-compatible endpoint (just paste the
   base URL + key).
 - For **Ollama**, you can **pull** new models and **load / unload** them into memory
@@ -63,7 +63,7 @@ model servers are first-class, not an afterthought.
 
 1. In LM Studio, load a model and start its server (Developer → Start Server).
 2. In Open Paw: **Add provider → LM Studio**, set the **Base URL** to your server,
-   e.g. `http://10.5.0.2:1338` (you can paste just `host:port` — Nekko appends
+   e.g. `http://10.5.0.2:1338` (you can paste just `host:port`, Nekko appends
    `/v1` automatically). No API key needed.
 3. **Test connection** → the model dropdown fills with whatever LM Studio is serving.
 4. Pick the model in the chat header and go.
@@ -77,7 +77,7 @@ answer, so you see progress during long reasoning and the answer stays clean.
 ## 3. The unified chat
 
 The **Chat** tab is the heart of the app. There are no separate "chat", "cowork",
-and "code" modes — it's one thread. Ask a question, or hand off a task and let
+and "code" modes, it's one thread. Ask a question, or hand off a task and let
 Nekko act on your machine through tools (read / write / edit files, glob, grep,
 list dirs, run shell commands).
 
@@ -88,7 +88,7 @@ list dirs, run shell commands).
   makes shows up as a card so you can see exactly what it did.
 - Streaming is live; hit **Stop** to abort a turn.
 
-**Keyboard shortcuts** — Open Paw has a command palette (think Cmd-K everywhere):
+**Keyboard shortcuts**: Open Paw has a command palette (think Cmd-K everywhere):
 
 | Shortcut | Action |
 | --- | --- |
@@ -106,15 +106,15 @@ The right-hand panel (toggle it with the panel icon) is Open Paw's signature
 feature. It shows **exactly what is entering the prompt this turn**, grouped by
 where it came from:
 
-- **Guidelines** — `AGENTS.md` / `CLAUDE.md` / `.cursorrules` detected in your
+- **Guidelines**: `AGENTS.md` / `CLAUDE.md` / `.cursorrules` detected in your
   workspace folders
-- **Files** — anything you've attached
-- **Memory** — relevant global / per-project notes
-- **Connectors** — issues, messages, or docs pulled in from Linear/Slack/etc.
+- **Files**: anything you've attached
+- **Memory**: relevant global / per-project notes
+- **Connectors**: issues, messages, or docs pulled in from Linear/Slack/etc.
 
 Each item shows a **token estimate**, can be **toggled off** to exclude it, or
 **pinned** to always include it. The bar at the top shows how much of the model's
-context window you're using. No more guessing what the model "saw" — you can see
+context window you're using. No more guessing what the model "saw", you can see
 and shape it.
 
 ---
@@ -135,7 +135,7 @@ Open **Settings**. Two layers keep Nekko from doing something you didn't intend.
 | Off | No restrictions (power users) |
 
 **Guardrails** classify risky shell commands and decide whether to **allow**, **ask**,
-or **deny** — per rule, each toggleable. Ships with sensible defaults: recursive
+or **deny**, per rule, each toggleable. Ships with sensible defaults: recursive
 force-delete, raw disk writes, `git push --force`, `curl | sh`, privilege
 escalation, secret/`.env` access, and more. When a command matches an "ask" rule,
 the chat shows an **approval bar** with the exact command and its severity before
@@ -145,7 +145,7 @@ anything runs.
 
 ## 6. Projects & the codebase index
 
-The **Projects** tab manages your workspace folders — and yes, **multiple roots**
+The **Projects** tab manages your workspace folders, and yes, **multiple roots**
 are supported. Each folder is indexed for files and code symbols (functions,
 classes, interfaces, types) so the agent and search have a fast map of your code.
 

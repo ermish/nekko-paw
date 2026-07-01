@@ -45,7 +45,7 @@ export function registerIpc(host: Host): void {
     else await shell.openPath(target);
   });
 
-  // App info (real Electron version + desktop edition) — overrides the host's.
+  // App info (real Electron version + desktop edition), overrides the host's.
   ipcMain.removeHandler(IpcChannels.appInfo);
   ipcMain.handle(IpcChannels.appInfo, () => ({
     version: app.getVersion(),

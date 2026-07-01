@@ -3,7 +3,7 @@ import { ExternalIcon } from '../icons.js';
 
 /**
  * An integrated Chromium browser pane (Electron <webview>) with a URL bar and
- * back / forward / reload / open-external controls — for previewing a local dev
+ * back / forward / reload / open-external controls, for previewing a local dev
  * server or docs without leaving the app. Runs out-of-process; remote content
  * has no Node access.
  */
@@ -66,7 +66,7 @@ export function BrowserPane({ url: initial }: { url: string }) {
       <div className="min-h-0 flex-1">
         {url === 'about:blank' ? (
           <div className="grid h-full place-items-center px-6 text-center text-[13px] text-ink-faint">
-            Type a URL above to browse — e.g. <code className="mx-1">localhost:3000</code> to preview a dev server.
+            Type a URL above to browse, e.g. <code className="mx-1">localhost:3000</code> to preview a dev server.
           </div>
         ) : (
           <webview ref={ref as any} src={url} style={{ width: '100%', height: '100%' }} />

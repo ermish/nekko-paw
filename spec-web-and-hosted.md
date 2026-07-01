@@ -1,4 +1,4 @@
-# Open Paw — Web, Docker & Hosted Editions (Spec)
+# Open Paw, Web, Docker & Hosted Editions (Spec)
 
 > Added 2026-06-20. Expands the canonical [master-build-prompt.md](master-build-prompt.md) with three new pillars requested by Philip:
 > 1. An **offline web edition** that runs the *same code* as the native app via one npm command or `docker compose`.
@@ -19,7 +19,7 @@ This is a planning/spec document. Implementation lands in phases (see [Build pla
 | Local models | ✅ | ✅ | ✅ (host network) | ✅ via secure relay |
 | Cost | free, OSS | free, OSS | free, OSS | subscription |
 | Chat history / files | local disk | local disk | container volume | cloud-synced, encrypted |
-| Phone access | — | LAN only | LAN only | ✅ from anywhere |
+| Phone access |, | LAN only | LAN only | ✅ from anywhere |
 | Data retention | local only | local only | local only | **ZDR option always on offer** |
 
 **One promise across all of them:** the engine (`@open-paw/core`) and the entire React UI are identical. Only the *host transport* differs.
@@ -29,15 +29,15 @@ This is a planning/spec document. Implementation lands in phases (see [Build pla
 ## 2. Principle: one codebase, three runtimes
 
 ### 2.1 Where we are
-- `packages/core` — pure engine (providers, agent loop, guardrails, context, indexer, memory, connectors). Already transport-agnostic. ✅
-- `apps/desktop/src/main/*` — **host services** (settings store, sessions, chat orchestrator, sandboxed tool executor, workspace indexer, memory store, usage log, connector fetch) currently live here and are wired to the renderer through Electron IPC (`ipc.ts` + `preload`).
-- `apps/desktop/src/renderer/*` — React UI that calls `window.nekko.*` (the `NekkoApi` contract in `@open-paw/shared`).
+- `packages/core`, pure engine (providers, agent loop, guardrails, context, indexer, memory, connectors). Already transport-agnostic. ✅
+- `apps/desktop/src/main/*`, **host services** (settings store, sessions, chat orchestrator, sandboxed tool executor, workspace indexer, memory store, usage log, connector fetch) currently live here and are wired to the renderer through Electron IPC (`ipc.ts` + `preload`).
+- `apps/desktop/src/renderer/*`, React UI that calls `window.nekko.*` (the `NekkoApi` contract in `@open-paw/shared`).
 
 ### 2.2 The refactor: extract `packages/host`
 Move the service logic out of `apps/desktop/src/main` into a new transport-agnostic **`packages/host`**:
 
 ```
-packages/host/        // Node-only, no Electron, no HTTP — just services + a Host facade
+packages/host/        // Node-only, no Electron, no HTTP, just services + a Host facade
   services/           // settings, sessions, chat, tools, workspace, memory, usage, connectors
   host.ts             // createHost(opts) → an object implementing every NekkoApi method
                       // + an event emitter for AgentEvent / IndexProgress
@@ -109,39 +109,39 @@ The web server grants file + shell access to whoever can reach it. Therefore:
 
 ## 4. Nekko Cloud (paid, hosted)
 
-The managed edition. Everything the OSS app does, plus convenience that only a hosted service can provide — without giving up local execution or privacy.
+The managed edition. Everything the OSS app does, plus convenience that only a hosted service can provide, without giving up local execution or privacy.
 
 ### 4.1 What it adds over self-hosting
 1. **Zero-setup access** from any browser at `app.openpaw.com`.
-2. **Cloud chat history** — sessions sync across devices, encrypted at rest.
-3. **Cloud file management** — a cloud workspace (upload/organize/version files) alongside your local ones.
-4. **Phone connectivity to your local model** — use your phone to drive the model running on your home/office machine, from anywhere (§4.5). This is the headline cloud feature.
-5. **ZDR guarantee** — an always-available zero-data-retention mode (§4.4).
+2. **Cloud chat history**: sessions sync across devices, encrypted at rest.
+3. **Cloud file management**: a cloud workspace (upload/organize/version files) alongside your local ones.
+4. **Phone connectivity to your local model**: use your phone to drive the model running on your home/office machine, from anywhere (§4.5). This is the headline cloud feature.
+5. **ZDR guarantee**: an always-available zero-data-retention mode (§4.4).
 6. Managed connectors (OAuth apps pre-registered for Gmail/Drive/Slack/etc., so users don't register their own).
 
-> Local execution stays local. Cloud never runs your shell/filesystem tools on our servers — those always execute on *your* paired machine (desktop or self-hosted agent). The cloud is a sync + relay + billing layer.
+> Local execution stays local. Cloud never runs your shell/filesystem tools on our servers, those always execute on *your* paired machine (desktop or self-hosted agent). The cloud is a sync + relay + billing layer.
 
 ### 4.2 Accounts & auth
 - Email + OAuth (Google/GitHub) sign-in. Sessions via short-lived JWT + refresh token.
 - Org/team accounts (post-MVP) for shared connectors and seats.
 - Device pairing tokens link a local agent to an account (§4.5).
 
-### 4.3 Payments & plans (Stripe) — implemented
+### 4.3 Payments & plans (Stripe), implemented
 - **Stripe Checkout** for subscription start; **Stripe Customer Portal** for management; **webhooks** drive entitlement state (`active`, `past_due`, `canceled`).
-- Entitlements gate cloud-only features (sync, relay, managed connectors). The OSS app never checks a license — paid features are server-side only.
+- Entitlements gate cloud-only features (sync, relay, managed connectors). The OSS app never checks a license, paid features are server-side only.
 - **Implementation** (`apps/cloud/src/billing.ts`): hand-rolled against the Stripe REST API (no SDK dependency), gated on `STRIPE_SECRET_KEY` so the server runs without a Stripe account. `/api/billing/checkout` opens a Checkout Session for the chosen plan's price; `/api/billing/portal` opens the Customer Portal; `/api/billing/webhook` verifies the `Stripe-Signature` (HMAC-SHA256 over `${t}.${body}`, with a replay-window check) and applies plan changes via `store.setPlan` (`checkout.session.completed` and `customer.subscription.updated|deleted`). The account remembers its `stripeCustomerId` so subscription events map back to it. Requires keys to bill for real: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_PRO`, `STRIPE_PRICE_TEAM`, `CLOUD_PUBLIC_URL`.
 - Plans (draft, see §6): Free (OSS, BYO everything), Pro (individual), Team.
 - Free trial of Pro; annual discount.
 
-### 4.4 Zero Data Retention (ZDR) — always on offer
+### 4.4 Zero Data Retention (ZDR), always on offer
 A first-class, always-available mode (not an enterprise-only afterthought):
 - **Definition**: with ZDR enabled, the platform does **not** persist prompt/response content or file contents. Only minimal operational metadata needed for billing (token counts, timestamps, model id) and routing is stored; message bodies are processed in-memory and dropped.
-- **Model providers**: Cloud only routes to provider endpoints/configurations that themselves honor ZDR (e.g., your local model via relay — which never leaves your machine — or provider ZDR tiers). The UI shows a per-provider ZDR badge.
-- **Default vs opt-in**: ZDR is **always available on every plan**; users choose retention (for cloud history) vs ZDR (no retention) per workspace. Using your **local model via the relay is inherently ZDR** for inference (content never touches our servers in cleartext — see §4.5 transport).
+- **Model providers**: Cloud only routes to provider endpoints/configurations that themselves honor ZDR (e.g., your local model via relay, which never leaves your machine, or provider ZDR tiers). The UI shows a per-provider ZDR badge.
+- **Default vs opt-in**: ZDR is **always available on every plan**; users choose retention (for cloud history) vs ZDR (no retention) per workspace. Using your **local model via the relay is inherently ZDR** for inference (content never touches our servers in cleartext, see §4.5 transport).
 - **Verifiability**: published data-flow diagram; retention settings visible in-app; audit log of what was/wasn't stored.
 
 ### 4.5 Phone connectivity to your local model (the relay)
-Goal: open Nekko on your phone, talk to the LLM running on your home machine — securely, through NAT, without port-forwarding.
+Goal: open Nekko on your phone, talk to the LLM running on your home machine, securely, through NAT, without port-forwarding.
 
 ```
 [ Phone / browser ]  --TLS-->  [ Nekko Cloud relay ]  <--outbound WSS--  [ Local agent on your machine ]
@@ -170,24 +170,24 @@ Capture these on the website + README.
 
 ### 5.1 vs LM Studio (and Ollama UIs)
 > **LM Studio runs models. Open Paw runs *with your work*.**
-- LM Studio / most local UIs are **chat-only** — a great model runner with a chat box, but no awareness of your files or projects.
+- LM Studio / most local UIs are **chat-only**, a great model runner with a chat box, but no awareness of your files or projects.
 - Nekko **reads, edits, searches, and runs** in your actual codebases: multi-folder index, file viewer + inline editing, tool-using agent, per-project memory, guardrails. Same easy local-model setup, but the model can *do the work*, not just talk about it.
 
 ### 5.2 vs terminal CLIs (Claude Code, aider, etc.)
 > **The power of an agentic CLI, with eyes.**
-- Terminal agents are powerful but blind — you can't *see* what changed without `git diff`, and editing means leaving the tool.
-- Nekko gives an **IDE-like surface**: browse the indexed file tree, view files, see diffs, and edit inline — while the agent works alongside you. Approvals and the Context Inspector make every action visible.
+- Terminal agents are powerful but blind, you can't *see* what changed without `git diff`, and editing means leaving the tool.
+- Nekko gives an **IDE-like surface**: browse the indexed file tree, view files, see diffs, and edit inline, while the agent works alongside you. Approvals and the Context Inspector make every action visible.
 
 ### 5.3 Messaging pillars
-1. **Local-first, truly usable** — your models + your files, on your machine.
-2. **See everything** — Context Inspector shows exactly what the model gets; IDE-like file viewing/editing; guardrails on risky commands.
-3. **Runs anywhere, same app** — native, one-command web, Docker, or hosted.
-4. **Private by design** — offline OSS editions; Cloud offers an always-available ZDR mode and relays to *your* local model so inference content never leaves your machine.
-5. **Your phone, your home model** — drive your local LLM from anywhere (Cloud).
+1. **Local-first, truly usable**: your models + your files, on your machine.
+2. **See everything**: Context Inspector shows exactly what the model gets; IDE-like file viewing/editing; guardrails on risky commands.
+3. **Runs anywhere, same app**: native, one-command web, Docker, or hosted.
+4. **Private by design**: offline OSS editions; Cloud offers an always-available ZDR mode and relays to *your* local model so inference content never leaves your machine.
+5. **Your phone, your home model**: drive your local LLM from anywhere (Cloud).
 
 ---
 
-## 6. Pricing (draft — for discussion)
+## 6. Pricing (draft, for discussion)
 
 | Plan | Price (draft) | For | Includes |
 |---|---|---|---|
@@ -203,19 +203,19 @@ Numbers are placeholders pending cost modeling (relay bandwidth, storage). ZDR i
 
 Phase ordering keeps the OSS app shippable throughout.
 
-- [ ] **P2.1 — Host extraction**: move `apps/desktop/src/main` services into `packages/host`; rewrite desktop `main` as thin IPC wiring over `createHost()`. No user-visible change; keep build + tests green.
-- [ ] **P2.2 — Web server**: `apps/server` (Fastify) mapping the IPC contract to HTTP + WS; `renderer/web-client.ts` adapter; `npm run web`; localhost bind + token for non-local.
-- [ ] **P2.3 — Docker**: `Dockerfile`, `docker-compose.yml`, `host.docker.internal` model access, volume-mounted workspaces, non-root, published image via CI.
-- [ ] **P2.4 — Packaging/publish**: `npx open-paw` bin; website download/run section updated; docs.
-- [ ] **P3.1 — Cloud foundation**: accounts/auth, Postgres, entitlements, app.openpaw.com shell reusing the same renderer with a cloud transport.
-- [x] **P3.2 — Payments**: Stripe Checkout + Portal + signature-verified webhooks → `store.setPlan`; entitlement gating (already existed). Gated on `STRIPE_SECRET_KEY`; live charges need keys. See §4.3.
-- [ ] **P3.3 — ZDR + cloud history/files**: retention modes, encrypted storage, sync engine, ZDR badges + audit.
-- [ ] **P3.4 — Relay + phone**: local agent outbound WSS, relay service, device pairing (QR/code), E2E encryption, mobile-responsive UI / PWA, revoke devices.
-- [ ] **P3.5 — Managed connectors**: pre-registered OAuth apps for Gmail/Drive/Slack/Discord.
+- [ ] **P2.1, Host extraction**: move `apps/desktop/src/main` services into `packages/host`; rewrite desktop `main` as thin IPC wiring over `createHost()`. No user-visible change; keep build + tests green.
+- [ ] **P2.2, Web server**: `apps/server` (Fastify) mapping the IPC contract to HTTP + WS; `renderer/web-client.ts` adapter; `npm run web`; localhost bind + token for non-local.
+- [ ] **P2.3, Docker**: `Dockerfile`, `docker-compose.yml`, `host.docker.internal` model access, volume-mounted workspaces, non-root, published image via CI.
+- [ ] **P2.4, Packaging/publish**: `npx open-paw` bin; website download/run section updated; docs.
+- [ ] **P3.1, Cloud foundation**: accounts/auth, Postgres, entitlements, app.openpaw.com shell reusing the same renderer with a cloud transport.
+- [x] **P3.2, Payments**: Stripe Checkout + Portal + signature-verified webhooks → `store.setPlan`; entitlement gating (already existed). Gated on `STRIPE_SECRET_KEY`; live charges need keys. See §4.3.
+- [ ] **P3.3, ZDR + cloud history/files**: retention modes, encrypted storage, sync engine, ZDR badges + audit.
+- [ ] **P3.4, Relay + phone**: local agent outbound WSS, relay service, device pairing (QR/code), E2E encryption, mobile-responsive UI / PWA, revoke devices.
+- [ ] **P3.5, Managed connectors**: pre-registered OAuth apps for Gmail/Drive/Slack/Discord.
 
 ## 8. Open questions
 - Hosting/runtime for Cloud (Fly.io / Render / AWS?) and relay scaling model.
 - E2E key management UX (recovery vs zero-knowledge trade-offs).
 - Mobile: PWA first, or native shells later?
-- Exact ZDR boundary for cloud-configured (non-local) providers without ZDR tiers — likely "not allowed in ZDR workspaces."
+- Exact ZDR boundary for cloud-configured (non-local) providers without ZDR tiers, likely "not allowed in ZDR workspaces."
 - Do desktop + local web share one data dir by default, or separate? (Lean: share, so the web UI sees your desktop sessions.)

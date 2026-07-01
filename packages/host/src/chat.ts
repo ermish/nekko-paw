@@ -119,7 +119,7 @@ async function collectConnectorSnippets(
       return resources.slice(0, 5).map((r) => ({
         label: r.title,
         origin: c.kind,
-        body: [r.subtitle, r.body].filter(Boolean).join(' — ') || r.title,
+        body: [r.subtitle, r.body].filter(Boolean).join(', ') || r.title,
       }));
     } catch {
       return [];
@@ -183,7 +183,7 @@ async function runSubAgent(
 ): Promise<string> {
   const maxDepth = getSettings().orchestration?.maxDepth ?? DEFAULT_ORCHESTRATION.maxDepth;
   if (sessionDepth(parentId) >= maxDepth) {
-    return 'Sub-agent depth limit reached — handle this part of the task directly instead of delegating further.';
+    return 'Sub-agent depth limit reached, handle this part of the task directly instead of delegating further.';
   }
   if (!task.trim()) return 'No task was provided to the sub-agent.';
   const parent = getSession(parentId);

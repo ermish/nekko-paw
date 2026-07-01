@@ -2,7 +2,7 @@
 
 A dumb, end-to-end-encrypted pipe that pairs a remote client (your phone) with a
 local agent (your desktop) by room code, so a phone can drive your local model
-with no inbound ports. The relay never sees conversation content — only the
+with no inbound ports. The relay never sees conversation content, only the
 routing envelope and content-free control frames.
 
 ```bash

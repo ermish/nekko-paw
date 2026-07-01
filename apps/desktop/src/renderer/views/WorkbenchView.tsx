@@ -308,7 +308,7 @@ export function WorkbenchView() {
               {!isCollapsed && (
                 <div className="mt-0.5 space-y-0.5">
                   {chats.length === 0 && terms.length === 0 && (
-                    <p className="px-3 py-1 text-[11px] text-ink-faint">Empty — start a chat or terminal.</p>
+                    <p className="px-3 py-1 text-[11px] text-ink-faint">Empty, start a chat or terminal.</p>
                   )}
                   {chats.map((s) => (
                     <div
@@ -407,8 +407,8 @@ function ChatRow({
         }`}
         style={{ paddingLeft: 12 + depth * 16 }}
       >
-        {/* Custom hierarchy bullet — filled for top-level chats, a hollow ring for
-            nested sub-agents — so nesting reads clearly without per-row icons. */}
+        {/* Custom hierarchy bullet, filled for top-level chats, a hollow ring for
+            nested sub-agents, so nesting reads clearly without per-row icons. */}
         <span
           aria-hidden
           className={`shrink-0 rounded-full transition-colors ${

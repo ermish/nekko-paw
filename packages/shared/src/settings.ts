@@ -23,7 +23,7 @@ export const DEFAULT_PROMPTS: PromptTemplate[] = [
   { id: 'refactor', name: 'refactor', body: 'Refactor this for clarity and simplicity without changing behavior.' },
 ];
 
-/** Sampling effort — maps to temperature in the chat request. */
+/** Sampling effort, maps to temperature in the chat request. */
 export type EffortLevel = 'low' | 'normal' | 'high';
 
 export const EFFORT_TEMPERATURE: Record<EffortLevel, number> = {
@@ -95,7 +95,7 @@ export interface UsageSummary {
 
 /**
  * Rough public list prices (USD per 1M tokens), matched by substring of the
- * model id. Local models / unknown ids → $0. Estimates only — always labelled.
+ * model id. Local models / unknown ids → $0. Estimates only, always labelled.
  */
 export const MODEL_PRICING: Array<{ match: string; input: number; output: number }> = [
   { match: 'opus', input: 15, output: 75 },

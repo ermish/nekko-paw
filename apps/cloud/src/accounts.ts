@@ -71,7 +71,7 @@ export class CloudStore {
     writeFileSync(this.file, JSON.stringify(this.data, null, 2));
   }
 
-  /** Per-account data dir — handed to `withDataDir`/`createHost` for isolation. */
+  /** Per-account data dir, handed to `withDataDir`/`createHost` for isolation. */
   dataDirFor(accountId: string): string {
     return join(this.accountsDir, accountId);
   }

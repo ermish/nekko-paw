@@ -5,9 +5,9 @@ import { FileTypeIcon } from '../fileIcons.js';
 /**
  * Diff & approval view (Devin-style). Lists every file the agent changed this
  * session and lets you accept (keep) or revert at three granularities:
- *   • per line  — tick lines to revert, then "Revert selected"
- *   • per file  — Keep or Revert file
- *   • all files — Keep all / Revert all
+ *   • per line, tick lines to revert, then "Revert selected"
+ *   • per file, Keep or Revert file
+ *   • all files, Keep all / Revert all
  * Diffs are computed client-side (LCS) against the original snapshot the host
  * took before the agent's first edit. Reverting writes the merged content back.
  */
@@ -167,7 +167,7 @@ function FileDiff({ sessionId, change, onChanged }: { sessionId: string; change:
                   onClick={() => toggle(i)}
                   className={`flex cursor-pointer ${reverted ? 'opacity-50' : ''}`}
                   style={{ background: add ? 'rgba(78,201,138,0.12)' : 'rgba(224,87,74,0.12)' }}
-                  title={reverted ? 'Will be reverted — click to keep' : 'Click to revert this line'}
+                  title={reverted ? 'Will be reverted, click to keep' : 'Click to revert this line'}
                 >
                   <span className="w-5 shrink-0 select-none text-center" style={{ color: add ? '#4ec98a' : '#e0574a' }}>
                     {add ? '+' : '-'}

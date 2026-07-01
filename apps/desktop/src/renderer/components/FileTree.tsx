@@ -6,8 +6,8 @@ import { FolderIcon } from '../icons.js';
 /**
  * A lightweight VS Code–style file explorer: a collapsible "Files" disclosure
  * per project that lazy-loads each folder's children on expand. Clicking a file
- * opens it in a FilePane (view/edit in-app). Not a full IDE tree — no rename/DnD
- * yet — just enough to browse and open without leaving Open Paw.
+ * opens it in a FilePane (view/edit in-app). Not a full IDE tree, no rename/DnD
+ * yet, just enough to browse and open without leaving Open Paw.
  */
 export function ProjectFiles({ root, onOpen }: { root: string; onOpen: (path: string) => void }) {
   const [open, setOpen] = useState(false);

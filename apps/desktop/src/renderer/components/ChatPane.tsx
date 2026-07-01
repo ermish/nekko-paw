@@ -148,7 +148,7 @@ export function ChatPane({ sessionId, onRunningChange }: { sessionId: string; on
     setMascotMood('thinking');
   };
 
-  // The concrete model to run this turn: the picked one, or — in Auto mode —
+  // The concrete model to run this turn: the picked one, or, in Auto mode -
   // the best available model for the prompt (favorites break ties).
   const resolveModelId = (text: string): string | null => {
     if (modelId !== AUTO_MODEL_ID) return modelId;
@@ -178,7 +178,7 @@ export function ChatPane({ sessionId, onRunningChange }: { sessionId: string; on
         modelId: useModel && useModel !== AUTO_MODEL_ID ? useModel : undefined,
         intervalMs: 5 * 60_000,
       });
-      useStore.getState().pushToast('success', 'Goal started as a background task — track it in Command Center.');
+      useStore.getState().pushToast('success', 'Goal started as a background task, track it in Command Center.');
       if (override === undefined) setDraft('');
       return;
     }

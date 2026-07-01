@@ -30,13 +30,13 @@ try {
   await sleep(600);
 
   if (log.includes('APNs not configured')) {
-    console.log('PASS — notify routed to the push sender for the offline client’s token');
+    console.log('PASS, notify routed to the push sender for the offline client’s token');
     code = 0;
   } else {
-    console.log('FAIL — expected a push attempt; relay log:\n' + log);
+    console.log('FAIL, expected a push attempt; relay log:\n' + log);
   }
 } catch (e) {
-  console.log('FAIL — ' + e.message);
+  console.log('FAIL, ' + e.message);
 } finally {
   relay.kill();
   process.exit(code);

@@ -22,7 +22,7 @@ function workspacePath(sessionId: string, filename: string): string | null {
 
 /**
  * Absolute path of the *primary* spec for a chat's workspace (the first doc of
- * its methodology — usually `spec.md`/`requirements.md`). Kept for the Context
+ * its methodology, usually `spec.md`/`requirements.md`). Kept for the Context
  * Inspector's "open spec" link and back-compat.
  */
 export function specPathForSession(sessionId: string): string | null {
@@ -43,7 +43,7 @@ export function readSpecDocs(
       try {
         content = readFileSync(path, 'utf8');
       } catch {
-        /* unreadable — treat as empty */
+        /* unreadable, treat as empty */
       }
     }
     return { ...d, path, exists, content };
@@ -60,10 +60,10 @@ export function setSpecMethodology(sessionId: string, methodologyId: string): vo
 }
 
 const ROLE_GUIDANCE: Record<SpecDocRole, string> = {
-  spec: `Write a clear, well-structured spec — the source of truth for WHAT we're building and WHY.
+  spec: `Write a clear, well-structured spec, the source of truth for WHAT we're building and WHY.
 Use sections like: Overview, Goals, Users, Requirements (or user stories with acceptance criteria), and Open Questions.
 Keep it about the product, not the implementation.`,
-  plan: `Write a technical plan — HOW we'll build what the spec describes.
+  plan: `Write a technical plan, HOW we'll build what the spec describes.
 Use sections like: Architecture, Stack & Key Decisions, Data Model, Conventions, and Risks.
 Ground it in the spec (provided below). Do not restate the spec; reference it.`,
   tasks: `Write an implementation task list as a markdown checklist.
@@ -117,7 +117,7 @@ export async function buildSpecDoc(
 
   const system = `You maintain a project's ${doc.filename}, part of a spec-driven development workflow ("${m.label}"), synthesized from an ongoing working conversation between a user and an AI assistant.
 ${ROLE_GUIDANCE[doc.role]}
-If an existing ${doc.filename} is provided, UPDATE it to reflect the latest conversation — keep still-valid content, revise what changed, add what's new.
+If an existing ${doc.filename} is provided, UPDATE it to reflect the latest conversation, keep still-valid content, revise what changed, add what's new.
 Be concise and concrete. Output ONLY the markdown for ${doc.filename}, with no preamble or code fences.`;
 
   const path = join(folder.path, doc.filename);

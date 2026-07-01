@@ -16,7 +16,7 @@ export function controlFrame(s: string): { type: string; [k: string]: any } | nu
 }
 
 /**
- * Nekko relay — the piece that lets a remote client (e.g. your phone, or Nekko
+ * Nekko relay, the piece that lets a remote client (e.g. your phone, or Nekko
  * Cloud) reach a local agent (your desktop/server) without inbound ports. Both
  * ends dial in over an outbound WebSocket and are matched by a room code; the
  * relay just forwards frames between them. It never inspects payloads beyond the

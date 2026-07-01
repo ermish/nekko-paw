@@ -102,7 +102,7 @@ try {
   const models = await call('models:list', 'lm');
   console.log('models:list →', models.slice(0, 3).map((m) => m.id).join(', '));
   const pass = test.ok && models.some((m) => m.id === model) && wrongKeyRejected;
-  console.log(`\n${pass ? 'RELAY PATH PASS ✅' : 'FAIL ❌'} — paired client reached the local model; wrong key rejected`);
+  console.log(`\n${pass ? 'RELAY PATH PASS ✅' : 'FAIL ❌'}, paired client reached the local model; wrong key rejected`);
   stop();
   process.exit(pass ? 0 : 1);
 } catch (e) {

@@ -1,4 +1,4 @@
-/** Types for the Design board — a Figma-style board of an app's UI page snapshots. */
+/** Types for the Design board, a Figma-style board of an app's UI page snapshots. */
 
 /** A persistent note pinned to a design page. */
 export interface DesignNote {

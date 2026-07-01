@@ -1,6 +1,6 @@
 # Open Paw CLI + MCP server (`opaw`)
 
-Drive your local Open Paw agent from the terminal — or expose it to other tools
+Drive your local Open Paw agent from the terminal, or expose it to other tools
 (Claude Code, Codex, any MCP client) so they can trigger agents, make chat
 requests, spin up sessions, and read status. Runs the same engine (`createHost`)
 in-process against your data dir.
@@ -12,12 +12,12 @@ node apps/cli/dist/index.js status        # or: npm link, then `opaw status`
 
 ### Where it connects
 
-- **Local (default)** — runs the engine in-process against a data dir: `~/.open-paw`
+- **Local (default)**: runs the engine in-process against a data dir: `~/.open-paw`
   (shared with the web/Docker edition). Set `OPENPAW_DATA_DIR` to the desktop app's
   dir to share that instead (`%APPDATA%/Open Paw/open-paw` on Windows,
   `~/Library/Application Support/Open Paw/open-paw` on macOS).
-- **Remote** — pass `--url http://host:4317` (or `OPENPAW_URL`) to talk to a
-  **running** Open Paw server over HTTP+WS — your live instance, a Docker
+- **Remote**: pass `--url http://host:4317` (or `OPENPAW_URL`) to talk to a
+  **running** Open Paw server over HTTP+WS, your live instance, a Docker
   container, or another machine. Add `--token` (or `OPENPAW_TOKEN`) if it's secured.
 
 Add `--json` to `status`/`sessions` for machine-readable output.
@@ -64,4 +64,4 @@ Or in any MCP client config:
 | `open_paw_status` | Providers, default model, workspaces, session count, relay status. |
 
 **Swarms**: call `open_paw_new_session` a few times and fan out `open_paw_chat`
-across the session ids — each is an independent agent driving your local model.
+across the session ids, each is an independent agent driving your local model.

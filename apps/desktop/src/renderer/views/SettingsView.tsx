@@ -106,7 +106,7 @@ export function SettingsView() {
         <section className="card mt-5 p-5">
           <div className="flex items-center gap-2"><ShieldIcon className="h-4 w-4" /><h2 className="font-semibold">{tr('settings.chatModes')}</h2></div>
           <p className="mt-1 text-[12px] text-ink-faint">
-            How chats run tools. Pick the default for new chats — each chat can override it from the composer.
+            How chats run tools. Pick the default for new chats, each chat can override it from the composer.
           </p>
           <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-3">
             {CHAT_MODES.map((m) => {
@@ -285,7 +285,7 @@ function DataSection({ onSettings }: { onSettings: (s: AppSettings) => void }) {
   };
 
   const wipe = async () => {
-    if (!window.confirm('Delete EVERYTHING — all chats, settings, memory, and usage? This cannot be undone.')) return;
+    if (!window.confirm('Delete EVERYTHING, all chats, settings, memory, and usage? This cannot be undone.')) return;
     if (!window.confirm('Are you absolutely sure? This wipes all Open Paw data.')) return;
     setBusy(true);
     const s = await window.nekko.wipeAllData();
@@ -494,7 +494,7 @@ function GuardrailsSection({
         </button>
       </div>
       <p className="mt-1 text-[12px] text-ink-faint">
-        Protections for risky commands. Set each to allow, ask, or deny — or edit the rule set directly as JSON.
+        Protections for risky commands. Set each to allow, ask, or deny, or edit the rule set directly as JSON.
       </p>
 
       {jsonMode ? (
@@ -569,7 +569,7 @@ function UpdatesSection({ settings, onToggle }: { settings: AppSettings; onToggl
         : status.state === 'error'
           ? status.message ?? 'Update check failed.'
           : status.state === 'downloaded'
-            ? 'Update downloaded — restart to apply.'
+            ? 'Update downloaded, restart to apply.'
             : '';
 
   return (

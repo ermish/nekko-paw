@@ -1,7 +1,7 @@
 /**
- * Usage optimization insights — pure heuristics that turn the usage summary +
+ * Usage optimization insights, pure heuristics that turn the usage summary +
  * sessions + provider config into a small set of actionable, prioritized tips
- * ("you're spending $X on Opus for short chats — try a smaller model"). No
+ * ("you're spending $X on Opus for short chats, try a smaller model"). No
  * model calls, no I/O: just analysis of data the app already has, so it's
  * trivially unit-testable and safe to run on every Command Center render.
  */
@@ -101,7 +101,7 @@ export function optimizationTips(input: InsightsInput, limit = 5): OptimizationT
       id: 'prune-context',
       severity: 'warn',
       title: 'Your prompts are mostly context',
-      detail: `Input tokens outweigh output ${Math.round(ratio)}:1. Trim attached files and use the Context Inspector to exclude sources you don't need — you pay for every context token each turn.`,
+      detail: `Input tokens outweigh output ${Math.round(ratio)}:1. Trim attached files and use the Context Inspector to exclude sources you don't need, you pay for every context token each turn.`,
     });
   }
 
@@ -119,7 +119,7 @@ export function optimizationTips(input: InsightsInput, limit = 5): OptimizationT
     }
   }
 
-  // 5. No favorites pinned but many models used — minor nudge.
+  // 5. No favorites pinned but many models used, minor nudge.
   if (Object.keys(usage.byModel).length >= 4) {
     tips.push({
       id: 'pin-favorites',

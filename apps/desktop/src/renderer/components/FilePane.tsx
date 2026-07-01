@@ -11,15 +11,15 @@ const LINE_H = 20;
 /** Format a line comment into a block the agent reads as a user turn. */
 function commentBlock(name: string, line: number, lineText: string, comment: string): string {
   const code = lineText.trim() ? `\n\n\`\`\`\n${lineText}\n\`\`\`` : '';
-  return `Re \`${name}:${line}\` — ${comment}${code}`;
+  return `Re \`${name}:${line}\`, ${comment}${code}`;
 }
 
 /**
  * Built-in file viewer/editor. Markdown renders (with a Source/Preview toggle);
  * other text files open in a lightweight mono editor you can edit and save
  * in-app. A gutter "+" lets you drop an inline comment on any line that the
- * agent picks up — Add to prompt (queue it) or Run now (send it). Deliberately
- * not a full IDE — just enough to read, tweak, and steer changes without leaving
+ * agent picks up, Add to prompt (queue it) or Run now (send it). Deliberately
+ * not a full IDE, just enough to read, tweak, and steer changes without leaving
  * Open Paw.
  */
 export function FilePane({ path }: { path: string }) {
@@ -122,7 +122,7 @@ export function FilePane({ path }: { path: string }) {
 
       {truncated && (
         <div className="border-b border-line px-3 py-1 text-[11px] text-amber-500">
-          Large file — showing the first part only; editing is disabled.
+          Large file, showing the first part only; editing is disabled.
         </div>
       )}
 
@@ -158,7 +158,7 @@ export function FilePane({ path }: { path: string }) {
           {!loaded ? (
             <p className="p-4 text-[12px] text-ink-faint">Loading…</p>
           ) : binary ? (
-            <p className="p-4 text-[12px] text-ink-faint">Binary file — can't display as text.</p>
+            <p className="p-4 text-[12px] text-ink-faint">Binary file, can't display as text.</p>
           ) : isMd && preview ? (
             <div className="px-5 py-4"><Markdown text={content} /></div>
           ) : (

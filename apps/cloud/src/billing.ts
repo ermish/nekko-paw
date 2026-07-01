@@ -3,7 +3,7 @@ import type { Plan } from './entitlements.js';
 
 /**
  * Nekko Cloud billing via Stripe. Hand-rolled against the Stripe REST API (no
- * SDK dependency — same dependency-free DNA as the relay's APNs/FCM senders):
+ * SDK dependency, same dependency-free DNA as the relay's APNs/FCM senders):
  * a couple of form-encoded `fetch` POSTs plus an HMAC-SHA256 webhook-signature
  * verifier built on `node:crypto`. Everything is gated on `STRIPE_SECRET_KEY`
  * so the cloud server runs (and its tests pass) with no Stripe account; real

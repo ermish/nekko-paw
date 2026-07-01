@@ -62,7 +62,7 @@ export function createTask(input: NewTask): AutomationTask[] {
   const title = input.title.trim() || 'Untitled task';
   const id = randomUUID();
   // Give every task its own chat session up front so the dashboard can always
-  // open it — even before the task has fired. Firing reuses this session.
+  // open it, even before the task has fired. Firing reuses this session.
   const settings = getSettings();
   const providerId = input.providerId ?? settings.defaultProviderId;
   const modelId = input.modelId ?? settings.defaultModelId;
@@ -136,7 +136,7 @@ async function fireTask(id: string): Promise<void> {
   const providerId = task.providerId ?? settings.defaultProviderId;
   const modelId = task.modelId ?? settings.defaultModelId;
   if (!providerId || !modelId) {
-    persistTask(id, { status: 'error', lastResult: 'No model configured — set a default provider/model in Models.' });
+    persistTask(id, { status: 'error', lastResult: 'No model configured, set a default provider/model in Models.' });
     return;
   }
 

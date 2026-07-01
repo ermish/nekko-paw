@@ -19,7 +19,7 @@ const EFFORTS: EffortLevel[] = ['low', 'normal', 'high'];
 /**
  * Thin status bar under the conversation: context usage (with a hover breakdown
  * of where the tokens go), throughput, whether the model is thinking, and an
- * effort control — mirroring the at-a-glance metrics in Claude Code.
+ * effort control, mirroring the at-a-glance metrics in Claude Code.
  */
 export function ChatMetrics({
   bundle,
@@ -91,7 +91,7 @@ export function ChatMetrics({
 
         {/* Throughput */}
         <span title="Output tokens per second (last turn)">
-          {tps > 0 ? `${tps} tok/s` : '— tok/s'}
+          {tps > 0 ? `${tps} tok/s` : '- tok/s'}
         </span>
 
         <span className="opacity-40">·</span>

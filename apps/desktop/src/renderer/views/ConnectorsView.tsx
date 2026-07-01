@@ -5,9 +5,9 @@ import { ConnectorIcon } from '../connectorIcons.js';
 
 /** Where to get each connector's token, with a link to open. */
 const HELP: Record<ConnectorKind, { hint: string; url: string }> = {
-  linear: { hint: 'Personal API key — Linear → Settings → Security & access → New API key.', url: 'https://linear.app/settings/api' },
+  linear: { hint: 'Personal API key, Linear → Settings → Security & access → New API key.', url: 'https://linear.app/settings/api' },
   slack: { hint: 'Bot/User OAuth token (xoxb-/xoxp-) with channels:read + search:read scopes.', url: 'https://api.slack.com/apps' },
-  discord: { hint: 'Bot token — Discord Developer Portal → your app → Bot → Reset Token.', url: 'https://discord.com/developers/applications' },
+  discord: { hint: 'Bot token, Discord Developer Portal → your app → Bot → Reset Token.', url: 'https://discord.com/developers/applications' },
   gmail: { hint: 'OAuth access token with the gmail.readonly scope (one-click OAuth coming; for now grab a token from the OAuth Playground).', url: 'https://developers.google.com/oauthplayground' },
   gdrive: { hint: 'OAuth access token with the drive.readonly scope (one-click OAuth coming; for now grab a token from the OAuth Playground).', url: 'https://developers.google.com/oauthplayground' },
 };
@@ -24,7 +24,7 @@ export function ConnectorsView() {
 
   const isConnected = (k: ConnectorKind) => configs.find((c) => c.kind === k)?.connected;
 
-  // Connect, then validate the token with a real fetch — only stay connected if
+  // Connect, then validate the token with a real fetch, only stay connected if
   // it actually works, so a bad token surfaces immediately instead of silently.
   const connect = async (k: ConnectorKind) => {
     if (!tokens[k] || busy) return;
@@ -39,7 +39,7 @@ export function ConnectorsView() {
     } catch (e) {
       await window.nekko.disconnectConnector(k);
       setConfigs(await window.nekko.listConnectors());
-      setErrors((er) => ({ ...er, [k]: (e as Error).message || 'Could not connect — check the token.' }));
+      setErrors((er) => ({ ...er, [k]: (e as Error).message || 'Could not connect, check the token.' }));
     } finally {
       setBusy(null);
     }

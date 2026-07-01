@@ -12,7 +12,7 @@ import { getSettings } from './store.js';
  *
  * Backed by @lydell/node-pty: an N-API, prebuilt PTY whose binary loads under
  * both Node (server/cloud editions) and Electron (desktop) with no native
- * toolchain or electron-rebuild — which is why we can use it without breaking
+ * toolchain or electron-rebuild, which is why we can use it without breaking
  * the project's "builds everywhere" footprint. Terminals live in memory only.
  */
 
@@ -140,7 +140,7 @@ export function createTerminal(opts?: { workspaceId?: string; cwd?: string; titl
       cols,
       rows,
       cwd,
-      // A real TTY — leave TERM/PAGER alone so prompts and pagers render normally.
+      // A real TTY, leave TERM/PAGER alone so prompts and pagers render normally.
       env: { ...process.env } as Record<string, string>,
     });
   } catch (err) {

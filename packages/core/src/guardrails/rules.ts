@@ -3,7 +3,7 @@ import type { GuardrailRule } from '@open-paw/shared';
 /**
  * Default guardrail ruleset. These ship enabled out of the box so that risky
  * shell commands prompt the user before running. Patterns are intentionally
- * conservative — they err toward "ask" rather than silent "deny".
+ * conservative, they err toward "ask" rather than silent "deny".
  */
 export const DEFAULT_GUARDRAILS: GuardrailRule[] = [
   {

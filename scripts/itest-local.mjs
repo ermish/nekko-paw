@@ -95,7 +95,7 @@ for await (const ev of runAgent({
 console.log(`\nfinal answer: ${finalText.trim()}`);
 const pass =
   toolsCalled.includes('read_file') && /biscuits/i.test(finalText);
-console.log(`\nScenario 1 ${pass ? 'PASS ✅' : 'FAIL ❌'} — tool used: ${toolsCalled.join(',') || 'none'}; mentioned magic word: ${/biscuits/i.test(finalText)}`);
+console.log(`\nScenario 1 ${pass ? 'PASS ✅' : 'FAIL ❌'}, tool used: ${toolsCalled.join(',') || 'none'}; mentioned magic word: ${/biscuits/i.test(finalText)}`);
 
 console.log('\n== Scenario 2: multi-step (list_dir → read_file) ==');
 writeFileSync(join(dir, 'readme.txt'), 'nothing here', 'utf8');
@@ -124,7 +124,7 @@ for await (const ev of runAgent({
 }
 console.log(`\nfinal: ${final2.trim().slice(0, 200)}`);
 const pass2 = tools2.includes('list_dir') && tools2.includes('read_file') && /config\.txt/i.test(final2);
-console.log(`Scenario 2 ${pass2 ? 'PASS ✅' : 'FAIL ❌'} — tools: ${tools2.join(',')}; named config.txt: ${/config\.txt/i.test(final2)}`);
+console.log(`Scenario 2 ${pass2 ? 'PASS ✅' : 'FAIL ❌'}, tools: ${tools2.join(',')}; named config.txt: ${/config\.txt/i.test(final2)}`);
 
 const allPass = pass && pass2;
 console.log(`\n${allPass ? 'ALL PASS ✅' : 'SOME FAILED ❌'}`);

@@ -1,13 +1,13 @@
-# @open-paw/cloud — Nekko Cloud (hosted edition)
+# @open-paw/cloud, Nekko Cloud (hosted edition)
 
 The multi-account, hosted edition. It wraps the **same** host engine (`@open-paw/host`)
-and the **same** React UI as the desktop and self-hosted web editions — just per
+and the **same** React UI as the desktop and self-hosted web editions, just per
 authenticated account, with feature limits enforced server-side by plan.
 
 The OSS app (desktop / self-hosted server) **never** signs in or license-checks.
 Only this hosted edition has accounts and entitlements.
 
-## What's here (Phase 3.1 — Cloud foundation)
+## What's here (Phase 3.1, Cloud foundation)
 
 - **Accounts + auth** (`accounts.ts`): email/password sign-up & log-in, scrypt
   password hashing (`node:crypto`, no deps), bearer session tokens. File-backed
@@ -24,7 +24,7 @@ Only this hosted edition has accounts and entitlements.
   account token as the Bearer the existing web-client already sends.
 - **Billing** (`billing.ts`): Stripe Checkout + Customer Portal + webhooks,
   hand-rolled against the Stripe REST API (no SDK dep) and **gated on
-  `STRIPE_SECRET_KEY`** — the server runs and tests pass with no Stripe account.
+  `STRIPE_SECRET_KEY`**, the server runs and tests pass with no Stripe account.
   Webhook signatures are verified with HMAC-SHA256 (`node:crypto`); on
   `checkout.session.completed` / `customer.subscription.*` events the account's
   plan is updated via `store.setPlan`, which immediately changes its
@@ -39,9 +39,9 @@ npm run cloud            # from repo root: builds engine + renderer, serves :431
 Environment:
 
 - `CLOUD_PORT` (default `4318`), `CLOUD_HOST` (default `127.0.0.1`)
-- `CLOUD_DATA_DIR` (default `~/.open-paw-cloud`) — cloud metadata + per-account dirs
-- `OPENPAW_RENDERER_DIR` — override the served renderer build
-- `CLOUD_PUBLIC_URL` — public base URL, for Checkout success/cancel/portal redirects
+- `CLOUD_DATA_DIR` (default `~/.open-paw-cloud`), cloud metadata + per-account dirs
+- `OPENPAW_RENDERER_DIR`, override the served renderer build
+- `CLOUD_PUBLIC_URL`, public base URL, for Checkout success/cancel/portal redirects
 - Billing (optional; billing stays disabled if `STRIPE_SECRET_KEY` is unset):
   `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_PRO`, `STRIPE_PRICE_TEAM`
 
@@ -49,9 +49,9 @@ Environment:
 
 | Route | Auth | Purpose |
 | --- | --- | --- |
-| `GET /api/auth/config` | — | `{ cloud: true, billing }` (renderer uses this to decide whether to gate / show upgrade) |
-| `POST /api/auth/signup` | — | `{ email, password }` → `{ token, account, entitlements }` |
-| `POST /api/auth/login` | — | `{ email, password }` → `{ token, account, entitlements }` |
+| `GET /api/auth/config` |, | `{ cloud: true, billing }` (renderer uses this to decide whether to gate / show upgrade) |
+| `POST /api/auth/signup` |, | `{ email, password }` → `{ token, account, entitlements }` |
+| `POST /api/auth/login` |, | `{ email, password }` → `{ token, account, entitlements }` |
 | `GET /api/auth/me` | Bearer | `{ account, entitlements }` |
 | `POST /api/auth/logout` | Bearer | invalidate the token |
 | `POST /api/billing/checkout` | Bearer | `{ plan: 'pro'｜'team' }` → `{ url }` (Stripe Checkout) |

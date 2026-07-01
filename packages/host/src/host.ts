@@ -95,7 +95,7 @@ import { randomUUID } from 'crypto';
  * per runtime (e.g. `addWorkspaceByPath`, since Electron uses a native dialog
  * while the web server takes a path string).
  *
- * Every edition — Electron, the web server, Nekko Cloud — wraps the same Host.
+ * Every edition, Electron, the web server, Nekko Cloud, wraps the same Host.
  */
 export interface Host {
   /** Emits 'agentEvent' (AgentEvent) and 'indexProgress' (IndexStatus). */
@@ -176,7 +176,7 @@ export interface Host {
 
   /** Files the agent changed this session (for diff/approve). */
   listChanges(sessionId: string): FileChange[];
-  /** Keep a file's changes — stop tracking it. */
+  /** Keep a file's changes, stop tracking it. */
   acceptChange(sessionId: string, path: string): void;
   /** Keep all of a session's changes. */
   acceptAllChanges(sessionId: string): void;

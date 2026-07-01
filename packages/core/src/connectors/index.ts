@@ -6,7 +6,7 @@ export interface Connector {
   fetch(token: string, query?: string, settings?: Record<string, string>): Promise<ConnectorResource[]>;
 }
 
-/** Linear — GraphQL API, authenticated with a personal API key. */
+/** Linear, GraphQL API, authenticated with a personal API key. */
 export const linearConnector: Connector = {
   kind: 'linear',
   async fetch(token, query) {
@@ -31,7 +31,7 @@ export const linearConnector: Connector = {
   },
 };
 
-/** Slack — Web API, token-based. Lists channels or searches messages. */
+/** Slack, Web API, token-based. Lists channels or searches messages. */
 export const slackConnector: Connector = {
   kind: 'slack',
   async fetch(token, query) {
@@ -59,7 +59,7 @@ export const slackConnector: Connector = {
   },
 };
 
-/** Discord — bot token. Lists the bot's guilds. */
+/** Discord, bot token. Lists the bot's guilds. */
 export const discordConnector: Connector = {
   kind: 'discord',
   async fetch(token) {
@@ -80,7 +80,7 @@ export const gmailConnector: Connector = {
       `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=20${query ? `&q=${encodeURIComponent(query)}` : ''}`,
       { headers: { Authorization: `Bearer ${token}` } },
     );
-    if (!res.ok) throw new Error(`Gmail ${res.status} — connect via OAuth`);
+    if (!res.ok) throw new Error(`Gmail ${res.status}, connect via OAuth`);
     const json: any = await res.json();
     return (json.messages ?? []).map((m: any) => ({ id: m.id, title: `Message ${m.id}`, subtitle: 'Gmail', body: '' }));
   },
@@ -93,7 +93,7 @@ export const gdriveConnector: Connector = {
       `https://www.googleapis.com/drive/v3/files?pageSize=20${query ? `&q=${encodeURIComponent(`name contains '${query}'`)}` : ''}`,
       { headers: { Authorization: `Bearer ${token}` } },
     );
-    if (!res.ok) throw new Error(`Drive ${res.status} — connect via OAuth`);
+    if (!res.ok) throw new Error(`Drive ${res.status}, connect via OAuth`);
     const json: any = await res.json();
     return (json.files ?? []).map((f: any) => ({ id: f.id, title: f.name, subtitle: f.mimeType, body: '' }));
   },

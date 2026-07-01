@@ -1,4 +1,4 @@
-# Open Paw — self-hosted web edition in Docker.
+# Open Paw, self-hosted web edition in Docker.
 #   docker compose up        (build + run)
 # Then open http://localhost:4317
 services:

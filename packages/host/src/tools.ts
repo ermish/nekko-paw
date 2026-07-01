@@ -26,7 +26,7 @@ export interface ToolHostOptions {
   requestApproval: (call: ToolCall, reason: string, severity: 'low' | 'medium' | 'high') => Promise<boolean>;
   /** Per-chat tool-execution policy (defaults to guardrails). */
   mode?: ChatMode;
-  /** Chat this tool runs for — used to track file changes for diff/approve. */
+  /** Chat this tool runs for, used to track file changes for diff/approve. */
   sessionId?: string;
 }
 
@@ -157,7 +157,7 @@ export async function executeTool(call: ToolCall, opts: ToolHostOptions): Promis
 
 const SKIP = new Set(['node_modules', '.git', 'dist', 'out', 'build', '.next', 'target', '.venv', 'coverage']);
 
-/** Minimal glob supporting **, *, and ? — no external dependency. */
+/** Minimal glob supporting **, *, and ?, no external dependency. */
 function globFiles(root: string, pattern: string): string[] {
   const re = globToRegExp(pattern);
   const out: string[] = [];

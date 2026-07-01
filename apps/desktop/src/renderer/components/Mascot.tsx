@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 export type MascotMood = 'idle' | 'waving' | 'thinking';
 
 /**
- * Nekko — an 8-bit pixel cat that peeks in from the right edge of the window.
+ * Nekko, an 8-bit pixel cat that peeks in from the right edge of the window.
  * It waves on idle/greeting and "makes cat biscuits" (kneads its paws) while
  * the model is thinking. Rendered as crisp pixel art via an SVG rect grid.
  */
